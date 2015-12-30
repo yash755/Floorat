@@ -95,13 +95,6 @@ public class Login extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
 
-                    if(isConnected()) {
-                        if (AccessToken.getCurrentAccessToken() != null) {
-
-                        }
-                    }else
-                        Toast.makeText(getApplicationContext(), "You are Not Connected", Toast.LENGTH_SHORT).show();
-
                 }
             });
 
@@ -175,7 +168,7 @@ public class Login extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
 
-                                    if(flag == 1){
+                                    if(flag == 2){
                                         System.out.println("Flag Value" + flag);
                                     }
                                     else {
@@ -202,7 +195,6 @@ public class Login extends AppCompatActivity {
             @Override
             public void onError(FacebookException exception) {
 
-                Toast.makeText(getApplicationContext(), "You are Not Connected", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -216,11 +208,7 @@ public class Login extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    public boolean isConnected(){
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
+
 
     private void showerrormessage(){
         AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(Login.this);

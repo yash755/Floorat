@@ -2,5 +2,8 @@
     <string name="app_name">Floorat</string>
     <string name="action_settings">Settings</string>
     <string name="facebook_app_id">1743114585919037</string>
+    <string name="title_activity_splash">Splash</string>
+    <string name="title_activity_error_page">ErrorPage</string>
+
 
 </resources>
