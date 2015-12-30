@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -44,6 +46,7 @@ public class Login extends AppCompatActivity {
     CallbackManager callbackManager;
     ShareDialog shareDialog;
     LoginButton login;
+    int flag =0;
 
 
     @Override
@@ -54,15 +57,14 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        DatabaseHelper db =new DatabaseHelper(this);
+
 
         callbackManager = CallbackManager.Factory.create();
 
-      //  if(isConnected()) {
+
         login = (LoginButton)findViewById(R.id.login_button);
         login.setReadPermissions("user_friends");
-        //}
-        //else
-            //Toast.makeText(getApplicationContext(), "You are Not Connected", Toast.LENGTH_SHORT).show();
 
 
 
@@ -92,28 +94,102 @@ public class Login extends AppCompatActivity {
             login.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (AccessToken.getCurrentAccessToken() != null) {
-                        //
-                        //  profile.setProfileId(null);
-                    }
+
+                    if(isConnected()) {
+                        if (AccessToken.getCurrentAccessToken() != null) {
+
+                        }
+                    }else
+                        Toast.makeText(getApplicationContext(), "You are Not Connected", Toast.LENGTH_SHORT).show();
+
                 }
             });
 
 
         login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
+            public void onSuccess(final LoginResult loginResult) {
 
                 if (AccessToken.getCurrentAccessToken() != null) {
 
-                    int data = RequestData();
+                    GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
 
-                    if(data == 1) {
-                        login.setVisibility(View.INVISIBLE);
+
+                        @Override
+                        public void onCompleted(JSONObject object, GraphResponse response) {
+
+                            JSONObject json = response.getJSONObject();
+                            String text = null;
+
+                            try {
+                                if (json != null) {
+                                    text = json.getString("gender");
+
+                                    if (text.equals("female")) {
+                                        System.out.println("I am" + text);
+                                        flag++;
+                                    }
+
+
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+                        }
+                    });
+
+                    Bundle parameters = new Bundle();
+                    parameters.putString("fields", "gender");
+                    request.setParameters(parameters);
+
+                    new GraphRequest(
+                            AccessToken.getCurrentAccessToken(),
+                            "/me/friends",
+                            null,
+                            HttpMethod.GET,
+                            new GraphRequest.Callback() {
+
+
+                                public void onCompleted(GraphResponse response) {
+            /* handle the result */
+                                    JSONObject json = response.getJSONObject();
+                                    System.out.println("Response is " + json.toString());
+                                    String friend_list = null;
+
+
+                                    try {
+                                        JSONObject js = json.getJSONObject("summary");
+                                        friend_list = js.getString("total_count");
+                                        System.out.println("Response  is total_count" + friend_list);
+                                        int result = friend_list.compareTo("50");
+                                        if (result > 0) {
+                                            System.out.println("I am" + friend_list);
+                                            flag++;
+                                        }
+
+                                    } catch (JSONException e) {
+                                        System.out.println("Response was ");
+                                        e.printStackTrace();
+                                    }
+
+                                    if(flag == 1){
+                                        System.out.println("Flag Value" + flag);
+                                    }
+                                    else {
+                                        System.out.println("Flag Value" + flag);
+                                        login.performClick();
+                                    }
+
+
+                                }
+                            }
+                    ).executeAsync();
+
                     //    startActivity(new Intent(getApplicationContext(), StartActivity.class));
-                    }
-                    else
-                        showerrormessage();
+                    //   showerrormessage();
 
                 }
             }
@@ -134,100 +210,7 @@ public class Login extends AppCompatActivity {
     }
 
 
-
-    public int RequestData(){
-
-        final int[] flag = new int[1];
-
-        GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-
-
-            @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-
-                JSONObject json = response.getJSONObject();
-                String text = null;
-                // System.out.println("Response is " + response.toString());
-                // System.out.println("Response" + object.toString());
-                try {
-                    if (json != null) {
-                        text = json.getString("gender");
-
-                        if (text.equals("female")) {
-                            System.out.println("I am" + text);
-                            flag[0]++;
-                        }
-
-
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
-
-
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "gender");
-        request.setParameters(parameters);
-        request.executeAsync();
-
-
-
-        new GraphRequest(
-                AccessToken.getCurrentAccessToken(),
-                "/me/friends",
-                null,
-                HttpMethod.GET,
-                new GraphRequest.Callback() {
-
-
-                    public void onCompleted(GraphResponse response) {
-            /* handle the result */
-                        JSONObject json = response.getJSONObject();
-                        System.out.println("Response is " + json.toString());
-                        String ram = null;
-
-
-                        try {
-                            JSONObject js = json.getJSONObject("summary");
-                            ram = js.getString("total_count");
-                            System.out.println("Response  is total_count" + ram);
-                            int result = ram.compareTo("50");
-                            if(result >0) {
-                                System.out.println("I am" + ram);
-                                flag[0]++;
-                            }
-
-                        } catch (JSONException e) {
-                            System.out.println("Response was ");
-                            e.printStackTrace();
-                        }
-
-
-
-                    }
-
-
-
-                }
-        ).executeAsync();
-
-        System.out.println("I am" + flag[0]);
-
-        if (flag[0] == 2 )
-            return 1;
-        else
-            return 0;
-
-
-
-    }
-
-    @Override
+   @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
