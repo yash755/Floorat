@@ -1,12 +1,13 @@
 package com.floorat;
 
-import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -18,7 +19,6 @@ import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.facebook.share.widget.ShareDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,11 +26,10 @@ import org.json.JSONObject;
 
 public class Login extends AppCompatActivity {
 
+    UserLocalStore userlocalstore;
     CallbackManager callbackManager;
-    ShareDialog shareDialog;
     LoginButton login;
     int flag =0;
-    public Util u = new Util();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +39,8 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        DatabaseHelper db =new DatabaseHelper(this);
+
+        userlocalstore = new UserLocalStore(this);
 
 
 
@@ -54,7 +54,7 @@ public class Login extends AppCompatActivity {
 
 
 //If implement Logout
-
+/*
         Intent intent=this.getIntent();
         String value = null;
         if(intent.getExtras() !=null)
@@ -73,6 +73,8 @@ public class Login extends AppCompatActivity {
            // startActivity(new Intent(this, StartActivity.class));
 
         }
+
+        */
 
 
             login.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +98,7 @@ public class Login extends AppCompatActivity {
                         public void onCompleted(JSONObject object, GraphResponse response) {
 
                             JSONObject json = response.getJSONObject();
-                            String text = null;
+                            String text;
 
                             try {
                                 if (json != null) {
@@ -134,7 +136,7 @@ public class Login extends AppCompatActivity {
             /* handle the result */
                                     JSONObject json = response.getJSONObject();
                                     System.out.println("Response is " + json.toString());
-                                    String friend_list = null;
+                                    String friend_list;
 
 
                                     try {
@@ -156,36 +158,33 @@ public class Login extends AppCompatActivity {
 
                                     if(flag == 2){
                                         System.out.println("Flag Value" + flag);
-                                        u.setFlag(flag);
+                                        userlocalstore.userData("1");
+                                        userlocalstore.setUserloggedIn(true);
+
+                                        Intent i = new Intent(Login.this, Home.class);
+                                        startActivity(i);
                                     }
                                     else {
                                         System.out.println("Flag Value" + flag);
-                                        login.performClick();
-                                        u.setFlag(flag);
+                                        showerrormessage();
                                     }
                                 }
                             }
                     ).executeAsync();
-<<<<<<< HEAD
 
-                    //    startActivity(new Intent(getApplicationContext(), StartActivity.class));
-                    //   showerrormessage();
 
                 }
-=======
-               }
->>>>>>> b5ec915be2abdf53d6d1aaaa58e3553b130d2e5e
-            }
-
+             }
             @Override
             public void onCancel() {
 
             }
-
             @Override
-            public void onError(FacebookException exception) {
+            public void onError(FacebookException error) {
 
+                Toast.makeText(getApplicationContext(), "Try After Sometime", Toast.LENGTH_SHORT).show();
             }
+
         });
 
 

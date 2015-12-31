@@ -11,11 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 public class Splash extends AppCompatActivity {
 
     static int SPLASH_TIME_OUT = 3000;
+    UserLocalStore userlocalstore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        userlocalstore = new UserLocalStore(this);
 
 
         new Handler().postDelayed(new Runnable() {
@@ -25,9 +28,7 @@ public class Splash extends AppCompatActivity {
                     // This method will be executed once the timer is over
                     // Start your app main activity
                 if(isConnected()) {
-                    int fl = new Util().getFlag();
-                    System.out.println("flag kuch yeh aaya hai "+fl);
-                    if(fl==1){
+                    if(userlocalstore.getuserloggedIn()){
                         Intent i = new Intent(Splash.this, Home.class);
                         startActivity(i);
                     }
