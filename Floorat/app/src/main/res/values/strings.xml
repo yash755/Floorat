@@ -4,6 +4,10 @@
     <string name="facebook_app_id">1743114585919037</string>
     <string name="title_activity_splash">Splash</string>
     <string name="title_activity_error_page">ErrorPage</string>
+    <string name="title_activity_home">Home</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
 
 </resources>
