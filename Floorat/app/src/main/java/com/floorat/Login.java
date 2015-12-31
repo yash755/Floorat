@@ -4,24 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -38,8 +23,6 @@ import com.facebook.share.widget.ShareDialog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class Login extends AppCompatActivity {
 
@@ -47,7 +30,7 @@ public class Login extends AppCompatActivity {
     ShareDialog shareDialog;
     LoginButton login;
     int flag =0;
-
+    public Util u = new Util();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +42,7 @@ public class Login extends AppCompatActivity {
 
         DatabaseHelper db =new DatabaseHelper(this);
 //Database object
+
 
         callbackManager = CallbackManager.Factory.create();
 
@@ -157,7 +141,9 @@ public class Login extends AppCompatActivity {
                                         JSONObject js = json.getJSONObject("summary");
                                         friend_list = js.getString("total_count");
                                         System.out.println("Response  is total_count" + friend_list);
-                                        int result = friend_list.compareTo("50");
+                                        //int result = friend_list.compareTo("50");
+
+                                        int result = Integer.parseInt(friend_list);
                                         if (result > 0) {
                                             System.out.println("I am" + friend_list);
                                             flag++;
@@ -170,22 +156,17 @@ public class Login extends AppCompatActivity {
 
                                     if(flag == 2){
                                         System.out.println("Flag Value" + flag);
+                                        u.setFlag(flag);
                                     }
                                     else {
                                         System.out.println("Flag Value" + flag);
                                         login.performClick();
+                                        u.setFlag(flag);
                                     }
-
-
                                 }
                             }
                     ).executeAsync();
-
-                    
-
-
-
-                }
+               }
             }
 
             @Override
@@ -209,8 +190,6 @@ public class Login extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-
-
     private void showerrormessage(){
         AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(Login.this);
         dialogbuilder.setMessage("Sorry but you must be femalse with minimum 50 friends");
@@ -225,8 +204,4 @@ public class Login extends AppCompatActivity {
         dialogbuilder.show();
 
     }
-
-
-
-
 }

@@ -25,8 +25,16 @@ public class Splash extends AppCompatActivity {
                     // This method will be executed once the timer is over
                     // Start your app main activity
                 if(isConnected()) {
-                    Intent i = new Intent(Splash.this, Login.class);
-                    startActivity(i);
+                    int fl = new Util().getFlag();
+                    System.out.println("flag kuch yeh aaya hai "+fl);
+                    if(fl==1){
+                        Intent i = new Intent(Splash.this, Home.class);
+                        startActivity(i);
+                    }
+                    else {
+                        Intent i = new Intent(Splash.this, Login.class);
+                        startActivity(i);
+                    }
                 }else{
                     Intent i = new Intent(Splash.this, ErrorPage.class);
                     startActivity(i);
@@ -43,9 +51,6 @@ public class Splash extends AppCompatActivity {
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
     }
-
-
-
-    }
+}
 
 
