@@ -58,7 +58,7 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         DatabaseHelper db =new DatabaseHelper(this);
-
+//Database object
 
         callbackManager = CallbackManager.Factory.create();
 
