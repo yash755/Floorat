@@ -94,7 +94,7 @@ public class Login extends AppCompatActivity {
             login.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    flag=0;
                 }
             });
 
@@ -213,7 +213,7 @@ public class Login extends AppCompatActivity {
 
     private void showerrormessage(){
         AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(Login.this);
-        dialogbuilder.setMessage("Sorry but you must be femalse with minimum 50 friends");
+        dialogbuilder.setMessage("Sorry but you must be female with minimum 50 friends");
         dialogbuilder.setPositiveButton("OK", new
                 DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
