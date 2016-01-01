@@ -195,13 +195,9 @@ public class Login extends AppCompatActivity {
             }
             @Override
             public void onError(FacebookException error) {
-
                 Toast.makeText(getApplicationContext(), "Try After Sometime", Toast.LENGTH_SHORT).show();
             }
-
         });
-
-
     }
 
 
@@ -264,7 +260,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void run() {
                 handler.post(Update);
-            }
+                }
         }, 3000, 3000);
 
         // Pager listener over indicator
@@ -278,7 +274,6 @@ public class Login extends AppCompatActivity {
 
             @Override
             public void onPageScrolled(int pos, float arg1, int arg2) {
-
             }
 
             @Override
