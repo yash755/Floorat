@@ -9,7 +9,7 @@ public class Util {
 
     public void setFlag(int x)
     {
+        System.out.println("Flag is was" + x);
         flag = x;
-        System.out.println("maine flag update kr diya hai "+flag);
     }
 }
