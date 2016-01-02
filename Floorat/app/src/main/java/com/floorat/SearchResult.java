@@ -6,9 +6,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+//<<<<<<< HEAD
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
+//=======
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+//>>>>>>> 33ea86a29102f27354bbe41da60689b9a9d672c3
 import android.widget.Toast;
 
 public class SearchResult extends AppCompatActivity {
