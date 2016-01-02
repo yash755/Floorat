@@ -1,9 +1,12 @@
 package com.floorat;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
@@ -94,7 +97,7 @@ public class Login extends AppCompatActivity {
             login.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    flag=0;
+                    flag = 0;
                 }
             });
 
@@ -170,15 +173,16 @@ public class Login extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
 
-                                    if(flag == 2){
+                                    if (flag == 2) {
                                         System.out.println("Flag Value" + flag);
-                                        userlocalstore.userData("1");
-                                        userlocalstore.setUserloggedIn(true);
+
+                                      //  userlocalstore.userData("1");
+
+                                     //   userlocalstore.setUserloggedIn(true);
 
                                         Intent i = new Intent(Login.this, Home.class);
                                         startActivity(i);
-                                    }
-                                    else {
+                                    } else {
                                         System.out.println("Flag Value" + flag);
                                         showerrormessage();
                                     }
@@ -188,11 +192,13 @@ public class Login extends AppCompatActivity {
 
 
                 }
-             }
+            }
+
             @Override
             public void onCancel() {
 
             }
+
             @Override
             public void onError(FacebookException error) {
                 Toast.makeText(getApplicationContext(), "Try After Sometime", Toast.LENGTH_SHORT).show();
@@ -282,5 +288,22 @@ public class Login extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        if(!isConnected()){
+            Intent in = new Intent(Login.this,ErrorPage.class);
+            startActivity(in);
+        }
+
+    }
+
+    public boolean isConnected(){
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
     }
 }
