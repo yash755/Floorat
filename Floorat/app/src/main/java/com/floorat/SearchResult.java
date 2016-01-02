@@ -1,40 +1,46 @@
 package com.floorat;
 
+import android.app.ActionBar;
+import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.Toast;
 
-public class SearchResult extends Home {
+public class SearchResult extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
 
+        Toast.makeText(getApplicationContext(), "Call hua", Toast.LENGTH_SHORT).show();
+
+
         handleIntent(getIntent());
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         handleIntent(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.home, menu);
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+
+        return true;
     }
 
     private void handleIntent(Intent intent) {
@@ -45,10 +51,9 @@ public class SearchResult extends Home {
             Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
             //use the query to search your data somehow
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
+        else{
+            System.out.println("Query aai hi nhi pa rhi");
+            Toast.makeText(getApplicationContext(), "No query", Toast.LENGTH_SHORT).show();
+        }
     }
 }

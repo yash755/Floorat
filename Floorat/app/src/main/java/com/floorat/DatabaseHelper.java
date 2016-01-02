@@ -52,7 +52,5 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
         db.insert(TABLE_NAME, null, contentValues);
 
     }
-
-
-    }
+}
 

@@ -31,7 +31,7 @@ public class Splash extends AppCompatActivity {
                 startActivity(in);
 
 
-                if(isConnected()) {
+                if(new Util().check_connection(Splash.this)) {
                     if(userlocalstore.getuserloggedIn()){
                         Intent i = new Intent(Splash.this, Home.class);
                         startActivity(i);
@@ -50,12 +50,6 @@ public class Splash extends AppCompatActivity {
                 }
             }, SPLASH_TIME_OUT);
         }
-
-    public boolean isConnected(){
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
 }
 
 

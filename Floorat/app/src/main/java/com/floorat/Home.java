@@ -74,6 +74,8 @@ public class Home extends AppCompatActivity
                 (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+
+
         return true;
     }
 
@@ -86,7 +88,6 @@ public class Home extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "No Notification", Toast.LENGTH_SHORT).show();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -120,19 +121,11 @@ public class Home extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if(isConnected()) {
-            
+        if(new Util().check_connection(Home.this)) {
         }
         else{
             Intent i = new Intent(Home.this, ErrorPage.class);
             startActivity(i);
         }
-    }
-
-
-    public boolean isConnected(){
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
     }
 }
