@@ -11,5 +11,14 @@
     <string name="title_activity_search_result">SearchResult</string>
     <string name="title_activity_apartments_list">ApartmentsList</string>
 
+    <string-array name="collections">
+        <item>All</item>
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>E</item>
+        <item>F</item>
+    </string-array>
 
 </resources>

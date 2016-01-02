@@ -9,7 +9,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -59,15 +61,10 @@ public class Login extends AppCompatActivity {
 
         userlocalstore = new UserLocalStore(this);
 
-
-
         callbackManager = CallbackManager.Factory.create();
-
 
         login = (LoginButton)findViewById(R.id.login_button);
         login.setReadPermissions("user_friends");
-
-
 
 
 //If implement Logout
@@ -173,14 +170,14 @@ public class Login extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
 
-                                    if (flag == 2) {
+                                    if (flag == 1) {
                                         System.out.println("Flag Value" + flag);
 
-                                        //  userlocalstore.userData("1");
+                                          userlocalstore.userData("1");
 
-                                        //   userlocalstore.setUserloggedIn(true);
+                                           userlocalstore.setUserloggedIn(true);
 
-                                        Intent i = new Intent(Login.this, Home.class);
+                                        Intent i = new Intent(getApplicationContext(), ApartmentsList.class);
                                         startActivity(i);
                                     } else {
                                         System.out.println("Flag Value" + flag);
@@ -300,6 +297,4 @@ public class Login extends AppCompatActivity {
         }
 
     }
-
-
 }
