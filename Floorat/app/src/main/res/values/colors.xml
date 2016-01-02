@@ -6,5 +6,9 @@
 
     <color name="black">#101010</color>
 
+    <color name="tabtextcolor">#9f9a9a</color>
+    <color name="tabsScrollColor">#34a5ca</color>
+    <color name="tabbackground">#e3efee</color>
+
 
 </resources>

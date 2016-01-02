@@ -44,7 +44,7 @@ public class Login extends AppCompatActivity {
     private static ViewPager mPager;
     private static int currentPage = 0;
     private static int NUM_PAGES = 0;
-    private static final Integer[] IMAGES= {R.drawable.lib,R.drawable.li,R.drawable.preview};
+    private static final Integer[] IMAGES= {R.drawable.nic,R.drawable.nic,R.drawable.nic};
     private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
 
     @Override
@@ -176,9 +176,9 @@ public class Login extends AppCompatActivity {
                                     if (flag == 2) {
                                         System.out.println("Flag Value" + flag);
 
-                                      //  userlocalstore.userData("1");
+                                        //  userlocalstore.userData("1");
 
-                                     //   userlocalstore.setUserloggedIn(true);
+                                        //   userlocalstore.setUserloggedIn(true);
 
                                         Intent i = new Intent(Login.this, Home.class);
                                         startActivity(i);
@@ -294,16 +294,12 @@ public class Login extends AppCompatActivity {
     public void onResume(){
         super.onResume();
 
-        if(!isConnected()){
+        if(!new Util().check_connection(Login.this)){
             Intent in = new Intent(Login.this,ErrorPage.class);
             startActivity(in);
         }
 
     }
 
-    public boolean isConnected(){
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
+
 }
