@@ -9,22 +9,19 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_apartments_list" tools:context="com.floorat.ApartmentsList">
 
-    <Spinner
+    <GridView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinner"
-        android:layout_marginTop="81dp"
-        android:entries="@array/collections"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/button2"
-        android:layout_alignEnd="@+id/button2" />
+        android:layout_height="400dp"
+        android:id="@+id/gridView"
+        android:layout_below="@+id/searchView"
+        android:numColumns="1"/>
 
-    <Button
-        android:layout_width="wrap_content"
+    <SearchView
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Show Groups"
-        android:id="@+id/button2"
-        android:layout_centerVertical="true"
+        android:id="@+id/searchView"
+        android:queryHint="Search.."
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

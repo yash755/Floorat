@@ -5,14 +5,20 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -31,7 +37,16 @@ import com.viewpagerindicator.CirclePageIndicator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,7 +71,34 @@ public class Login extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        new BuildingApiTask("http://192.168.1.102/social/buildingapi.php")
+                .execute(null, null);
+
+
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.floorat",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                System.out.println("in function");
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                //            System.out.println("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+
+        }
+
+
         init();
+
+
+
+
 
 
         userlocalstore = new UserLocalStore(this);
@@ -176,6 +218,10 @@ public class Login extends AppCompatActivity {
                                           userlocalstore.userData("1");
 
                                            userlocalstore.setUserloggedIn(true);
+
+                                        new UserApiTask("http://192.168.1.102/social/userapi.php")
+                                                .execute(null, null);
+
 
                                         Intent i = new Intent(getApplicationContext(), ApartmentsList.class);
                                         startActivity(i);

@@ -25,9 +25,6 @@ public class SearchResult extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
 
-        Toast.makeText(getApplicationContext(), "Call hua", Toast.LENGTH_SHORT).show();
-
-
         handleIntent(getIntent());
     }
 

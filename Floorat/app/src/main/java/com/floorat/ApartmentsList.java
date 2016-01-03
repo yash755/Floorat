@@ -1,6 +1,7 @@
 package com.floorat;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,10 +11,33 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.GridView;
+import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ApartmentsList extends AppCompatActivity {
+
+    GridView gv;
+    SearchView sv;
+
+    String[] teams;// {"Man Utd", "Man City", "Chelsea", "Arsenal", "Liverpool", "Totenham", "Everton", "Southampton", "Stoke", "Hull"};
+    ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,29 +46,46 @@ public class ApartmentsList extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+    teams = new BuildingApiTask().name;
+
+
+        gv = (GridView) findViewById(R.id.gridView);
+        sv = (SearchView) findViewById(R.id.searchView);
+
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, teams);
+
+
+        gv.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String value = (String)parent.getItemAtPosition(position);
+                sv.setQuery(value,false);
+
             }
         });
 
-        Spinner s1 = (Spinner) findViewById(R.id.spinner);
-
-        s1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String str6 = parent.getSelectedItem().toString();
+            public boolean onQueryTextSubmit(String query) {
+                Intent in = new Intent(ApartmentsList.this, Home.class);
+                startActivity(in);
+                return true;
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+          @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.length() > 0) {
+                    gv.setAdapter(adapter);
 
+
+                    adapter.getFilter().filter(newText);
+                }
+                return true;
             }
         });
-
+/*
 
         Button b2 = (Button) findViewById(R.id.button2);
 
@@ -54,7 +95,7 @@ public class ApartmentsList extends AppCompatActivity {
                 Intent in = new Intent(ApartmentsList.this, Home.class);
                 startActivity(in);
             }
-        });
+        });*/
     }
     @Override
     public void onBackPressed() {
@@ -69,5 +110,4 @@ public class ApartmentsList extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
 }
