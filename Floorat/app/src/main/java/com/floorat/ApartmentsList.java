@@ -69,6 +69,9 @@ public class ApartmentsList extends AppCompatActivity {
         sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
+                //update shared prefrences
+
                 Intent in = new Intent(ApartmentsList.this, Home.class);
                 startActivity(in);
                 return true;

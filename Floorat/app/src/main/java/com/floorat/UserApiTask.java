@@ -10,9 +10,7 @@ import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Created by sanchit on 3/1/16.
- */
+
 public class UserApiTask extends AsyncTask<Void, Void, Boolean> {
 
     private String url;

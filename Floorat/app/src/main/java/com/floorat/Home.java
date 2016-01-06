@@ -146,7 +146,12 @@ public class Home extends AppCompatActivity
 
         } else if (id == R.id.nav_slideshow) {
 
+            Intent in = new Intent(Home.this,NoticeBoard.class);
+            startActivity(in);
+
         } else if (id == R.id.nav_manage) {
+
+
 
         } else if (id == R.id.nav_share) {
 
