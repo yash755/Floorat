@@ -1,5 +1,6 @@
 package com.floorat;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -9,17 +10,24 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NoticeBoard extends AppCompatActivity {
 
-    android.widget.SearchView sv;
-    ListAdapter adpt;
+    private ArrayList<Product> mProductArrayList = new ArrayList<Product>();
+    private Noticeboardlistadapter adapter1;
+    ListView lvProducts;
+
+   private List<String> list = new ArrayList<String>();
+    List<String> mOriginalValues;
+    Noticeboardlistadapter adpt;
+
 
 
     private String imageUrls[] = {
@@ -27,27 +35,7 @@ public class NoticeBoard extends AppCompatActivity {
             "https://avatars.githubusercontent.com/u/14106541?v=3",
             "https://avatars.githubusercontent.com/u/14106541?v=3",
             "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
             "https://avatars.githubusercontent.com/u/14106541?v=3"
-
-
 
     };
 
@@ -57,8 +45,14 @@ public class NoticeBoard extends AppCompatActivity {
         setContentView(R.layout.activity_notice_board);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-       // sv = (android.widget.SearchView) findViewById(R.id.searchView);
+        // sv = (android.widget.SearchView) findViewById(R.id.searchView);
         setSupportActionBar(toolbar);
+
+        list.add("Linux");
+        list.add("Windows7");
+        list.add("Suse");
+        list.add("Eclipse");
+        list.add("Ubuntu");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -69,15 +63,24 @@ public class NoticeBoard extends AppCompatActivity {
             }
         });
 
+        mProductArrayList.add(new Product("https://avatars.githubusercontent.com/u/14106541?v=3", 100));
+        mProductArrayList.add(new Product("https://avatars.githubusercontent.com/u/14106541?v=3", 200));
+        mProductArrayList.add(new Product("https://avatars.githubusercontent.com/u/14106541?v=3", 300));
 
-        adpt = new Noticeboardlistadapter(this,imageUrls);
-        ListView li = (ListView) findViewById(R.id.listView1);
+
+
+        ListView li = (ListView) findViewById(R.id.lvProducts);
+        adapter1 = new Noticeboardlistadapter(NoticeBoard.this, mProductArrayList);
+        li.setAdapter(adapter1);
+
+
+      /*  adpt = new Noticeboardlistadapter(this,imageUrls,list);
+
         li.setAdapter(adpt);
-
-
-
+        li.setTextFilterEnabled(true);*/
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,16 +97,17 @@ public class NoticeBoard extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-           //     Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
-           //     Intent in = new Intent(Home.this, SearchResult.class);
-          //      startActivity(in);
+                //     Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
+                //     Intent in = new Intent(Home.this, SearchResult.class);
+                //      startActivity(in);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
 
-            //    adpt.getFilter().filter(newText);
+
+                adapter1.getFilter().filter(newText);
                 return true;
             }
         });
@@ -112,3 +116,4 @@ public class NoticeBoard extends AppCompatActivity {
     }
 
 }
+
