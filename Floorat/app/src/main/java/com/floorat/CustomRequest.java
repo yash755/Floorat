@@ -15,6 +15,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.HttpHeaderParser;
 
+
 public class CustomRequest extends Request<JSONArray>{
 
     private Listener<JSONArray> listener;
@@ -22,7 +23,7 @@ public class CustomRequest extends Request<JSONArray>{
 
     public CustomRequest(String url, Map<String, String> params,
                          Listener<JSONArray> reponseListener, ErrorListener errorListener) {
-        super(Method.POST, url, errorListener);
+        super(Method.GET, url, errorListener);
         this.listener = reponseListener;
         this.params = params;
     }
@@ -47,8 +48,9 @@ public class CustomRequest extends Request<JSONArray>{
     @Override
     protected Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
         try {
-            String jsonString = new String(response.data,
+          String jsonString = new String(response.data,
                     HttpHeaderParser.parseCharset(response.headers));
+            System.out.println("String" + jsonString);
             return Response.success(new JSONArray(jsonString),
                     HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {

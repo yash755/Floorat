@@ -29,7 +29,7 @@ public class Splash extends AppCompatActivity {
                     // Start your app main activity
 
                 if(new Util().check_connection(Splash.this)) {
-                    if (!userlocalstore.getuserloggedIn()) {
+                    if (userlocalstore.getuserloggedIn()) {
                         String apartment = userlocalstore.getdata();
                         System.out.println("Apartment" + apartment);
                         Intent i = new Intent(Splash.this, Home.class);

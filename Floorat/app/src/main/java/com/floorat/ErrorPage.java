@@ -27,4 +27,6 @@ public class ErrorPage extends AppCompatActivity implements View.OnClickListener
     public void onClick(View v) {
         startActivity(new Intent(Settings.ACTION_SETTINGS));
     }
+
+
 }

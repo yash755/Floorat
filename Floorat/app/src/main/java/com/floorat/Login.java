@@ -60,12 +60,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class Login extends AppCompatActivity implements View.OnClickListener {
+public class Login extends AppCompatActivity{
 
     UserLocalStore userlocalstore;
     CallbackManager callbackManager;
     LoginButton login;
-    Button b1;
+
     int flag =0;
 
     private static ViewPager mPager;
@@ -81,28 +81,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-
-        b1 = (Button)findViewById(R.id.button2);
-
-        b1.setOnClickListener(this);
-
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.floorat",
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                System.out.println("in function");
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-                //            System.out.println("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-
-        } catch (NoSuchAlgorithmException e) {
-
-        }
 
 
         init();
@@ -220,22 +198,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
                                     if (flag == 1) {
                                         System.out.println("Flag Value" + flag);
-
-                                          userlocalstore.userData("1", "null");
-                                        String apartment = userlocalstore.getdata();
-                                        System.out.println("Apartment" + apartment);
-
-                                        userlocalstore.setApartment(true);
-
-                               //           new UserApiTask("http://192.168.1.102/social/userapi.php")
-                                 //           .execute(null, null);
-
-
-                                        Intent i = new Intent(getApplicationContext(), ApartmentsList.class);
-                                        startActivity(i);
+                                        insertdata();
                                     } else {
                                         System.out.println("Flag Value" + flag);
-                                        showerrormessage();
+                                        showerrormessage("Sorry but you must be female with minimum 50 friends");
                                     }
                                 }
                             }
@@ -264,9 +230,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void showerrormessage(){
+    private void showerrormessage(String message){
         AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(Login.this);
-        dialogbuilder.setMessage("Sorry but you must be female with minimum 50 friends");
+        dialogbuilder.setMessage(message);
         dialogbuilder.setPositiveButton("OK", new
                 DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -352,38 +318,86 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-
-    void sendnotifications()
+    void insertdata()
     {
-        String url = "http://mogwliisjunglee.96.lt/buildingapi.php";
+        final ProgressDialog pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        String url = "http://mogwliisjunglee.96.lt/userapi.php";
         Map<String, String> params = new HashMap<String, String>();
-        params.put("action", "Droider");
+        params.put("action", "email");
+        params.put("email", "yash");
+        params.put("pass", "email2");
 
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, params, new Response.Listener<JSONArray>() {
 
             @Override
             public void onResponse(JSONArray response) {
-
-                    Log.d("Response: ", response.toString());
-
+               System.out.println("Response: " + response.toString());
+                pDialog.hide();
+                fetchresult(response);
 
             }
         }, new Response.ErrorListener() {
 
             @Override
-            public void onErrorResponse(VolleyError response) {
-                Log.d("Response: ", response.toString());
+            public void onErrorResponse(VolleyError error) {
+                if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Time Out Error", Toast.LENGTH_SHORT).show();
+                } else if (error instanceof AuthFailureError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Authentication Error", Toast.LENGTH_SHORT).show();
+                } else if (error instanceof ServerError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Server Error", Toast.LENGTH_SHORT).show();
+                } else if (error instanceof NetworkError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Network Error", Toast.LENGTH_SHORT).show();
+                } else if (error instanceof ParseError) {
+                    pDialog.hide();
+                    Log.d("Response: ", error.toString());
+                    Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(jsObjRequest);
     }
 
+    void fetchresult(JSONArray response){
+
+        String res = null;
+
+        try {
+            res = response.getString(0);
+            if(res.equals("Success")){
+                userlocalstore.userData("1", "null");
+                String apartment = userlocalstore.getdata();
+                System.out.println("Apartment" + apartment);
+
+                userlocalstore.setApartment(true);
+
+                Intent i = new Intent(getApplicationContext(), ApartmentsList.class);
+                startActivity(i);
+            }
+            else
+                showerrormessage("Something Went Wrong...." +
+                                  "Please Try Later");
+        }
+        catch (JSONException e) {
+        }
+
+
+
+    }
 
     @Override
-    public void onClick(View v) {
-        if(v == b1)
-            sendnotifications();
+    public void onBackPressed() {
     }
+
+
+
 }
 
