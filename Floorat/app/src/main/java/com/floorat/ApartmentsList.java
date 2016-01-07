@@ -33,6 +33,8 @@ import java.util.Map;
 
 public class ApartmentsList extends AppCompatActivity {
 
+    UserLocalStore userlocalstore;
+
     GridView gv;
     SearchView sv;
 
@@ -46,48 +48,53 @@ public class ApartmentsList extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        userlocalstore = new UserLocalStore(this);
 
-    teams = new BuildingApiTask().name;
+        teams = new BuildingApiTask().name;
 
 
-        gv = (GridView) findViewById(R.id.gridView);
+        gv = (GridView)   findViewById(R.id.gridView);
         sv = (SearchView) findViewById(R.id.searchView);
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, teams);
+        if(teams != null) {
+            adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, teams);
 
 
-        gv.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String value = (String)parent.getItemAtPosition(position);
-                sv.setQuery(value,false);
+            gv.setOnItemClickListener(
+                    new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            String value = (String) parent.getItemAtPosition(position);
+                            sv.setQuery(value, false);
 
-            }
-        });
+                        }
+                    });
 
-        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
+            sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
 
-                //update shared prefrences
-
-                Intent in = new Intent(ApartmentsList.this, Home.class);
-                startActivity(in);
-                return true;
-            }
-
-          @Override
-            public boolean onQueryTextChange(String newText) {
-                if (newText.length() > 0) {
-                    gv.setAdapter(adapter);
+                    userlocalstore.updatedata("1", query);
+                    userlocalstore.setUserloggedIn(true);
 
 
-                    adapter.getFilter().filter(newText);
+                    Intent in = new Intent(ApartmentsList.this, Home.class);
+                    startActivity(in);
+                    return true;
                 }
-                return true;
-            }
-        });
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    if (newText.length() > 0) {
+                        gv.setAdapter(adapter);
+
+
+                        adapter.getFilter().filter(newText);
+                    }
+                    return true;
+                }
+            });
+        }
 /*
 
         Button b2 = (Button) findViewById(R.id.button2);

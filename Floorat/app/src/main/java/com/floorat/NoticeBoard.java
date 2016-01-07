@@ -10,23 +10,32 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ListView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NoticeBoard extends AppCompatActivity {
 
     private ArrayList<Product> mProductArrayList = new ArrayList<Product>();
     private Noticeboardlistadapter adapter1;
-    ListView lvProducts;
 
    private List<String> list = new ArrayList<String>();
-    List<String> mOriginalValues;
-    Noticeboardlistadapter adpt;
+
 
 
 
@@ -58,8 +67,7 @@ public class NoticeBoard extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                sendnotifications();
             }
         });
 
@@ -113,6 +121,34 @@ public class NoticeBoard extends AppCompatActivity {
         });
 
         return true;
+    }
+
+
+    void sendnotifications()
+    {
+        String url = "http://mogwliisjunglee.96.lt/noticeapi.php";
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("action", "Droider");
+        params.put("building_name","Amrapali Sapphire");
+
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, params, new Response.Listener<JSONArray>() {
+
+            @Override
+            public void onResponse(JSONArray response) {
+
+                Log.d("Response: ", response.toString());
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError response) {
+                Log.d("Response: ", response.toString());
+            }
+        });
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(jsObjRequest);
     }
 
 }

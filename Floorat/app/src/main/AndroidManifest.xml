@@ -77,6 +77,11 @@
             android:label="@string/title_activity_notice_board"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".SendNotice"
+            android:label="@string/title_activity_send_notice"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>

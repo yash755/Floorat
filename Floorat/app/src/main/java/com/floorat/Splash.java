@@ -29,15 +29,26 @@ public class Splash extends AppCompatActivity {
                     // Start your app main activity
 
                 if(new Util().check_connection(Splash.this)) {
-                    if(userlocalstore.getuserloggedIn()){
+                    if (!userlocalstore.getuserloggedIn()) {
+                        String apartment = userlocalstore.getdata();
+                        System.out.println("Apartment" + apartment);
                         Intent i = new Intent(Splash.this, Home.class);
                         startActivity(i);
+                    } else {
+
+                        if (userlocalstore.getApartment()) {
+
+                            System.out.println("In Apartment");
+                            Intent i = new Intent(Splash.this, ApartmentsList.class);
+                            startActivity(i);
+                        } else {
+                            Intent i = new Intent(Splash.this, Login.class);
+                            startActivity(i);
+
+                        }
                     }
-                    else {
-                        Intent i = new Intent(Splash.this, Login.class);
-                        startActivity(i);
-                    }
-                }else{
+                }
+                else{
                     Intent i = new Intent(Splash.this, ErrorPage.class);
                     startActivity(i);
                 }
