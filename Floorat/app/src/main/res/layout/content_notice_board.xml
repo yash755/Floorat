@@ -11,7 +11,7 @@
 
 
     <ListView
-        android:id="@+id/lvProducts"
+        android:id="@+id/notices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:cacheColorHint="@android:color/transparent"

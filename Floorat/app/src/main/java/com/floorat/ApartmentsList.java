@@ -53,7 +53,7 @@ public class ApartmentsList extends AppCompatActivity {
     GridView gv;
     SearchView sv;
 
-    String[] teams;
+    String[] buildinglist;
     ArrayAdapter<String> adapter;
 
     @Override
@@ -90,7 +90,7 @@ public class ApartmentsList extends AppCompatActivity {
     void fetchbuildings()
     {
         final ProgressDialog pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Fetching Buildings...");
+        pDialog.setMessage("Fetching Building List...");
         pDialog.show();
 
         String url = "http://mogwliisjunglee.96.lt/buildingapi.php";
@@ -147,11 +147,11 @@ public class ApartmentsList extends AppCompatActivity {
         }
 
         System.out.println("Response is" + name[0]);
-        teams = name;
-        System.out.println("Response is" + teams[0]);
+        buildinglist = name;
+        System.out.println("Response is" + buildinglist[0]);
 
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, teams);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,buildinglist);
 
 
         gv.setOnItemClickListener(

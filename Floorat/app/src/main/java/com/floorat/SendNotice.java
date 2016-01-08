@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,6 +50,9 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
         setContentView(R.layout.activity_send_notice);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         heading      = (EditText)findViewById(R.id.heading);
         buttonChoose = (Button) findViewById(R.id.buttonChoose);
@@ -103,6 +107,13 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
             String head = heading.getText().toString();
           //  uploadImage(head,uploadImage);
         }
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        Intent myIntent = new Intent(this,NoticeBoard.class);
+        startActivityForResult(myIntent, 0);
+        return true;
+
     }
 /*
     private void uploadImage(final String heading, final String uploadimage){

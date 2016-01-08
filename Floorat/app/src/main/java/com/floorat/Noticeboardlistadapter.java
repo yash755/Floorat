@@ -19,22 +19,22 @@ import java.util.ArrayList;
 
 public class Noticeboardlistadapter extends BaseAdapter implements Filterable {
 
-    private ArrayList<Product> mOriginalValues; // Original Values
-    private ArrayList<Product> mDisplayedValues;    // Values to be displayed
+    private ArrayList<Noticelist> mOriginalValues; // Original Values
+    private ArrayList<Noticelist> mDisplayedValues;    // Values to be displayed
     LayoutInflater inflater;
     private Activity activity;
     public ImageLoader imageLoader;
 
-    public Noticeboardlistadapter(Context context, ArrayList<Product> mProductArrayList) {
-        this.mOriginalValues = mProductArrayList;
-        this.mDisplayedValues = mProductArrayList;
+    public Noticeboardlistadapter(Context context, ArrayList<Noticelist> nlist) {
+        this.mOriginalValues = nlist;
+        this.mDisplayedValues = nlist;
         inflater = LayoutInflater.from(context);
     }
 
-    public Noticeboardlistadapter(Activity a,ArrayList<Product> mProductArrayList ) {
+    public Noticeboardlistadapter(Activity a,ArrayList<Noticelist> nlist ) {
         activity = a;
-        this.mOriginalValues = mProductArrayList;
-        this.mDisplayedValues = mProductArrayList;
+        this.mOriginalValues = nlist;
+        this.mDisplayedValues = nlist;
         inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         imageLoader=new ImageLoader(activity.getApplicationContext());
     }
@@ -59,11 +59,11 @@ public class Noticeboardlistadapter extends BaseAdapter implements Filterable {
         if(convertView==null)
             vi = inflater.inflate(R.layout.noticeboard_rowview, null);
 
-        TextView text=(TextView)vi.findViewById(R.id.tvName);
-        text.setText(mDisplayedValues.get(position).price.toString());
+        TextView text=(TextView)vi.findViewById(R.id.heading);
+        text.setText(mDisplayedValues.get(position).heading);
 
         ImageView image=(ImageView)vi.findViewById(R.id.image);
-        imageLoader.DisplayImage(mDisplayedValues.get(position).name, image);
+        imageLoader.DisplayImage(mDisplayedValues.get(position).url, image);
         return vi;
 
     }
@@ -78,17 +78,17 @@ public class Noticeboardlistadapter extends BaseAdapter implements Filterable {
             @Override
             protected void publishResults(CharSequence constraint,FilterResults results) {
 
-                mDisplayedValues = (ArrayList<Product>) results.values; // has the filtered values
+                mDisplayedValues = (ArrayList<Noticelist>) results.values; // has the filtered values
                 notifyDataSetChanged();  // notifies the data with new filtered values
             }
 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new FilterResults();        // Holds the results of a filtering operation in values
-                ArrayList<Product> FilteredArrList = new ArrayList<Product>();
+                ArrayList<Noticelist> FilteredArrList = new ArrayList<Noticelist>();
 
                 if (mOriginalValues == null) {
-                    mOriginalValues = new ArrayList<Product>(mDisplayedValues); // saves the original data in mOriginalValues
+                    mOriginalValues = new ArrayList<Noticelist>(mDisplayedValues); // saves the original data in mOriginalValues
                 }
 
                 /********
@@ -105,9 +105,9 @@ public class Noticeboardlistadapter extends BaseAdapter implements Filterable {
                 } else {
                     constraint = constraint.toString().toLowerCase();
                     for (int i = 0; i < mOriginalValues.size(); i++) {
-                        String data = mOriginalValues.get(i).name;
+                        String data = mOriginalValues.get(i).heading;
                         if (data.toLowerCase().startsWith(constraint.toString())) {
-                            FilteredArrList.add(new Product(mOriginalValues.get(i).name,mOriginalValues.get(i).price));
+                            FilteredArrList.add(new Noticelist(mOriginalValues.get(i).heading,mOriginalValues.get(i).url));
                         }
                     }
                     // set the Filtered result to return

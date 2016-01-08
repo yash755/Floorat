@@ -31,22 +31,9 @@ import java.util.Map;
 
 public class NoticeBoard extends AppCompatActivity {
 
-    private ArrayList<Product> mProductArrayList = new ArrayList<Product>();
+    private ArrayList<Noticelist> nlist = new ArrayList<>();
     private Noticeboardlistadapter adapter1;
 
-   private List<String> list = new ArrayList<String>();
-
-
-
-
-    private String imageUrls[] = {
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3",
-            "https://avatars.githubusercontent.com/u/14106541?v=3"
-
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,39 +41,58 @@ public class NoticeBoard extends AppCompatActivity {
         setContentView(R.layout.activity_notice_board);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        // sv = (android.widget.SearchView) findViewById(R.id.searchView);
         setSupportActionBar(toolbar);
 
-        list.add("Linux");
-        list.add("Windows7");
-        list.add("Suse");
-        list.add("Eclipse");
-        list.add("Ubuntu");
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendnotifications();
+
+                startActivity(new Intent(NoticeBoard.this,SendNotice.class));
             }
         });
 
-        mProductArrayList.add(new Product("https://avatars.githubusercontent.com/u/14106541?v=3", 100));
-        mProductArrayList.add(new Product("https://avatars.githubusercontent.com/u/14106541?v=3", 200));
-        mProductArrayList.add(new Product("https://avatars.githubusercontent.com/u/14106541?v=3", 300));
+        nlist.add(new Noticelist("Music","https://avatars.githubusercontent.com/u/14106541?v=3"));
+        nlist.add(new Noticelist("Dance","https://avatars.githubusercontent.com/u/14106541?v=3"));
+        nlist.add(new Noticelist("Dance","https://avatars.githubusercontent.com/u/14106541?v=3"));
 
 
 
-        ListView li = (ListView) findViewById(R.id.lvProducts);
-        adapter1 = new Noticeboardlistadapter(NoticeBoard.this, mProductArrayList);
+        ListView li = (ListView) findViewById(R.id.notices);
+        adapter1 = new Noticeboardlistadapter(NoticeBoard.this,nlist);
         li.setAdapter(adapter1);
 
 
-      /*  adpt = new Noticeboardlistadapter(this,imageUrls,list);
 
-        li.setAdapter(adpt);
-        li.setTextFilterEnabled(true);*/
+    }
 
+    void fetchnotices()
+    {
+        String url = "http://mogwliisjunglee.96.lt/noticeapi.php";
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("action", "Droider");
+        params.put("building_name", "Amrapali Sapphire");
+
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, params, new Response.Listener<JSONArray>() {
+
+            @Override
+            public void onResponse(JSONArray response) {
+
+                Log.d("Response: ", response.toString());
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError response) {
+                Log.d("Response: ", response.toString());
+            }
+        });
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(jsObjRequest);
     }
 
 
@@ -124,32 +130,7 @@ public class NoticeBoard extends AppCompatActivity {
     }
 
 
-    void sendnotifications()
-    {
-        String url = "http://mogwliisjunglee.96.lt/noticeapi.php";
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("action", "Droider");
-        params.put("building_name","Amrapali Sapphire");
 
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, params, new Response.Listener<JSONArray>() {
-
-            @Override
-            public void onResponse(JSONArray response) {
-
-                Log.d("Response: ", response.toString());
-
-
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError response) {
-                Log.d("Response: ", response.toString());
-            }
-        });
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(jsObjRequest);
-    }
 
 }
 

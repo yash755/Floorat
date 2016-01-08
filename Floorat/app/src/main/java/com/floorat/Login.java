@@ -321,7 +321,7 @@ public class Login extends AppCompatActivity{
     void insertdata()
     {
         final ProgressDialog pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Loading...");
+        pDialog.setMessage("Saving Credentials...");
         pDialog.show();
 
         String url = "http://mogwliisjunglee.96.lt/userapi.php";
