@@ -93,7 +93,7 @@ public class ApartmentsList extends AppCompatActivity {
         pDialog.setMessage("Fetching Building List...");
         pDialog.show();
 
-        String url = "http://mogwliisjunglee.96.lt/buildingapi.php";
+        String url = "http://192.168.1.102/social/buildingapi.php";
         Map<String, String> params = new HashMap<String, String>();
         params.put("action", "Droider");
 

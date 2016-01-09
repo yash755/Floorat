@@ -324,7 +324,7 @@ public class Login extends AppCompatActivity{
         pDialog.setMessage("Saving Credentials...");
         pDialog.show();
 
-        String url = "http://mogwliisjunglee.96.lt/userapi.php";
+        String url = "http://192.168.1.102/social/userapi.php";
         Map<String, String> params = new HashMap<String, String>();
         params.put("action", "email");
         params.put("email", "yash");
@@ -351,6 +351,7 @@ public class Login extends AppCompatActivity{
                     Toast.makeText(getApplicationContext(), "Authentication Error", Toast.LENGTH_SHORT).show();
                 } else if (error instanceof ServerError) {
                     pDialog.hide();
+                    Log.d("Response: ", error.toString());
                     Toast.makeText(getApplicationContext(), "Server Error", Toast.LENGTH_SHORT).show();
                 } else if (error instanceof NetworkError) {
                     pDialog.hide();
@@ -393,9 +394,7 @@ public class Login extends AppCompatActivity{
 
     }
 
-    @Override
-    public void onBackPressed() {
-    }
+
 
 
 

@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,16 +20,26 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+
 import org.json.JSONArray;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class SendNotice extends AppCompatActivity  implements View.OnClickListener {
-
-    public static final String UPLOAD_URL = "http://simplifiedcoding.16mb.com/ImageUpload/upload.php";
-
 
     private int PICK_IMAGE_REQUEST = 1;
 
@@ -103,9 +114,12 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
             showFileChoosen();
         }
         if(v == buttonUpload){
+            UserLocalStore userLocalStore;
+            userLocalStore = new UserLocalStore(this);
+            String aptname=userLocalStore.getdata();
             String uploadImage = getStringImage(bitmap);
             String head = heading.getText().toString();
-          //  uploadImage(head,uploadImage);
+            insertdata(head, uploadImage,aptname);
         }
     }
 
@@ -115,44 +129,57 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
         return true;
 
     }
-/*
-    private void uploadImage(final String heading, final String uploadimage){
-        class UploadImage extends AsyncTask<String,Void,String> {
 
-            ProgressDialog loading;
-            RequestHandler rh = new RequestHandler();
+    void insertdata(String heading,String urls,String aptname)
+    {
+        final ProgressDialog pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Saving Credentials...");
+        pDialog.show();
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                loading = ProgressDialog.show(getApplicationContext(), "Uploading Image", "Please wait...", true, true);
-            }
+        String url = "http://192.168.1.102/social/noticeapi.php";
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("action","insert_notice");
+        params.put("heading", heading);
+        params.put("url",urls);
+        params.put("aptname",aptname);
 
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                loading.dismiss();
-                Toast.makeText(getApplicationContext(),s, Toast.LENGTH_LONG).show();
-            }
+        System.out.println("Sending" +params.toString());
+
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, params, new Response.Listener<JSONArray>() {
 
             @Override
-            protected JSONArray doInBackground(String... params) {
+            public void onResponse(JSONArray response) {
+                System.out.println("Response: " + response.toString());
+                pDialog.hide();
+              //  fetchresult(response);
 
-                String head = heading;
-                String uploadImages = uploadimage;
-
-                HashMap<String,String> data = new HashMap<>();
-                data.put("Heading",head);
-                data.put("Image", uploadImages);
-
-                JSONArray result = rh.sendPostRequest(UPLOAD_URL,data);
-
-                return result;
             }
-        }
+        }, new Response.ErrorListener() {
 
-        UploadImage ui = new UploadImage();
-        ui.execute(heading,uploadimage);
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Time Out Error", Toast.LENGTH_SHORT).show();
+                } else if (error instanceof AuthFailureError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Authentication Error", Toast.LENGTH_SHORT).show();
+                } else if (error instanceof ServerError) {
+                    pDialog.hide();
+                    Log.d("Response: ", error.toString());
+                    Toast.makeText(getApplicationContext(), "Server Error", Toast.LENGTH_SHORT).show();
+                } else if (error instanceof NetworkError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Network Error", Toast.LENGTH_SHORT).show();
+                } else if (error instanceof ParseError) {
+                    pDialog.hide();
+                    Log.d("Response: ", error.toString());
+                    Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(jsObjRequest);
     }
-*/
+
 }
