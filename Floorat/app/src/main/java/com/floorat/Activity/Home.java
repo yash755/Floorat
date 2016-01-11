@@ -29,6 +29,7 @@ import com.floorat.ImageUtils.DownloadImageTask;
 import com.floorat.ImageUtils.ImageLoader;
 import com.floorat.R;
 import com.floorat.Adapter.SlidingTabLayout;
+import com.floorat.SharedPrefrences.UserLocalStore;
 import com.floorat.Utils.Util;
 import com.floorat.Adapter.ViewPagerAdapter;
 
@@ -41,6 +42,7 @@ public class Home extends AppCompatActivity
     SlidingTabLayout tabs;
     CharSequence Titles[]={"My Groups","Apartment Groups"};
     int Numboftabs =2;
+    UserLocalStore userLocalStore;
 
 
 
@@ -55,6 +57,7 @@ public class Home extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
+        userLocalStore = new UserLocalStore(this);
 
         adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles,Numboftabs);
 
@@ -91,6 +94,8 @@ public class Home extends AppCompatActivity
 
 
 
+        String url = userLocalStore.geturl();
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -98,7 +103,7 @@ public class Home extends AppCompatActivity
         navigationView.addHeaderView(header);
 
         ImageView image=(ImageView)header.findViewById(R.id.header);
-        new DownloadImageTask(image).execute("https://avatars.githubusercontent.com/u/5563351?v=3");
+        new DownloadImageTask(image).execute(url);
     }
 
     @Override

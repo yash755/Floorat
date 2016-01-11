@@ -14,19 +14,21 @@ public class UserLocalStore {
             userLocalDatabase = context.getSharedPreferences(SP_Name,0);
         }
 
-        public void userData(String data,String apartment)
+        public void userData(String name,String gender,String url,String aptname)
         {
             SharedPreferences.Editor speditor = userLocalDatabase.edit();
-            speditor.putString("flag",data);
-            speditor.putString("apartment",apartment);
+            speditor.putString("name",name);
+            speditor.putString("gender",gender);
+            speditor.putString("url",url);
+            speditor.putString("aptname",aptname);
+
             speditor.commit();
         }
 
 
-        public void updatedata(String data,String apartment)
+        public void updatedata(String apartment)
         {
         SharedPreferences.Editor speditor = userLocalDatabase.edit();
-        speditor.putString("flag",data);
         speditor.putString("apartment",apartment);
         speditor.apply();
         }
@@ -37,6 +39,20 @@ public class UserLocalStore {
         return name;
 
         }
+
+    public String getgender(){
+
+        String name = userLocalDatabase.getString("gender", "");
+        return name;
+
+    }
+
+    public String geturl(){
+
+        String name = userLocalDatabase.getString("url", "");
+        return name;
+
+    }
 
         public void setUserloggedIn(boolean loggedIn){
             SharedPreferences.Editor speditor = userLocalDatabase.edit();

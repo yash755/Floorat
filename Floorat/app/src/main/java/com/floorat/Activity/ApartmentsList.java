@@ -81,7 +81,7 @@ public class ApartmentsList extends AppCompatActivity {
         pDialog.setMessage("Fetching Building List...");
         pDialog.show();
 
-        String url = "http://192.168.1.102/social/buildingapi.php";
+        String url = "http://mogwliisjunglee.96.lt/buildingapi.php";
         Map<String, String> params = new HashMap<String, String>();
         params.put("action", "Droider");
 
@@ -156,7 +156,7 @@ public class ApartmentsList extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-                userlocalstore.updatedata("1", query);
+                userlocalstore.updatedata(query);
                 userlocalstore.setUserloggedIn(true);
 
                 Intent in = new Intent(ApartmentsList.this, Home.class);

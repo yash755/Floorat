@@ -124,24 +124,27 @@ public class Login extends AppCompatActivity{
 
                 if (AccessToken.getCurrentAccessToken() != null) {
 
-                    GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                  GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
 
 
                         @Override
                         public void onCompleted(JSONObject object, GraphResponse response) {
 
                             JSONObject json = response.getJSONObject();
-                            String text;
+                            System.out.println("Gender " + json.toString());
+                            String gender,name,url;
 
                             try {
                                 if (json != null) {
-                                    text = json.getString("gender");
+                                    gender = json.getString("gender");
+                                    name   = json.getString("name");
 
-                                    if (text.equals("female")) {
-                                        System.out.println("I am" + text);
-                                        flag++;
-                                    }
+                                   JSONObject picture = json.getJSONObject("picture");
+                                   JSONObject data    = picture.getJSONObject("data");
 
+                                    url    = data.getString("url");
+
+                                    userlocalstore.userData(name,gender,url,"null");
 
                                 }
 
@@ -154,8 +157,10 @@ public class Login extends AppCompatActivity{
                     });
 
                     Bundle parameters = new Bundle();
-                    parameters.putString("fields", "gender");
+                    parameters.putString("fields", "gender,picture,name");
                     request.setParameters(parameters);
+                    request.executeAsync();
+
 
                     new GraphRequest(
                             AccessToken.getCurrentAccessToken(),
@@ -168,14 +173,12 @@ public class Login extends AppCompatActivity{
                                 public void onCompleted(GraphResponse response) {
             /* handle the result */
                                     JSONObject json = response.getJSONObject();
-                                    System.out.println("Response is " + json.toString());
                                     String friend_list;
 
 
                                     try {
                                         JSONObject js = json.getJSONObject("summary");
                                         friend_list = js.getString("total_count");
-                                        System.out.println("Response  is total_count" + friend_list);
                                         //int result = friend_list.compareTo("50");
 
                                         int result = Integer.parseInt(friend_list);
@@ -189,7 +192,9 @@ public class Login extends AppCompatActivity{
                                         e.printStackTrace();
                                     }
 
-                                    if (flag == 1) {
+                                    String gender = userlocalstore.getgender();
+                                    System.out.println("Gender" + gender);
+                                    if (flag == 1 && gender.equals("male")) {
                                         System.out.println("Flag Value" + flag);
                                         insertdata();
                                     } else {
@@ -317,8 +322,8 @@ public class Login extends AppCompatActivity{
         pDialog.setMessage("Saving Credentials...");
         pDialog.show();
 
-        String url = "http://192.168.1.102/social/userapi.php";
-        Map<String, String> params = new HashMap<String, String>();
+        String url = "https://mogwliisjunglee.96.lt/userapi.php";
+        Map<String, String> params = new HashMap<>();
         params.put("action", "email");
         params.put("email", "yash");
         params.put("pass", "email2");
@@ -367,7 +372,7 @@ public class Login extends AppCompatActivity{
         try {
             res = response.getString(0);
             if(res.equals("Success")){
-                userlocalstore.userData("1", "null");
+
                 String apartment = userlocalstore.getdata();
                 System.out.println("Apartment" + apartment);
 
