@@ -29,13 +29,13 @@ public class UserLocalStore {
         public void updatedata(String apartment)
         {
         SharedPreferences.Editor speditor = userLocalDatabase.edit();
-        speditor.putString("apartment",apartment);
+        speditor.putString("aptname",apartment);
         speditor.apply();
         }
 
         public String getdata(){
 
-        String name = userLocalDatabase.getString("apartment", "");
+        String name = userLocalDatabase.getString("aptname", "");
         return name;
 
         }

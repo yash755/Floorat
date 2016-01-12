@@ -159,6 +159,12 @@ public class ApartmentsList extends AppCompatActivity {
                 userlocalstore.updatedata(query);
                 userlocalstore.setUserloggedIn(true);
 
+                String apt = userlocalstore.getdata();
+                String gend =userlocalstore.getgender();
+                String url  =userlocalstore.geturl();
+
+                System.out.println("apt" + apt + gend + url);
+
                 Intent in = new Intent(ApartmentsList.this, Home.class);
                 startActivity(in);
                 return true;

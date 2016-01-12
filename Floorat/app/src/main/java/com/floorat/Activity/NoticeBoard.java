@@ -95,24 +95,24 @@ public class NoticeBoard extends AppCompatActivity {
                 if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                     pDialog.hide();
                     Toast.makeText(getApplicationContext(), "Time Out Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(),Home.class));
+                 //   startActivity(new Intent(getApplicationContext(),Home.class));
                 } else if (error instanceof AuthFailureError) {
                     pDialog.hide();
                     Toast.makeText(getApplicationContext(), "Authentication Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), Home.class));
+                  //  startActivity(new Intent(getApplicationContext(), Home.class));
                 } else if (error instanceof ServerError) {
                     pDialog.hide();
                     Toast.makeText(getApplicationContext(), "Server Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), Home.class));
+                  //  startActivity(new Intent(getApplicationContext(), Home.class));
                 } else if (error instanceof NetworkError) {
                     pDialog.hide();
                     Toast.makeText(getApplicationContext(), "Network Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), Home.class));
+                   // startActivity(new Intent(getApplicationContext(), Home.class));
                 } else if (error instanceof ParseError) {
                     pDialog.hide();
                     Log.d("Response: ", error.toString());
                     Toast.makeText(getApplicationContext(), "Unknown Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), Home.class));
+                   // startActivity(new Intent(getApplicationContext(), Home.class));
                 }
             }
         });

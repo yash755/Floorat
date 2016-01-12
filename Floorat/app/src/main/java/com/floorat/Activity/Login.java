@@ -192,9 +192,12 @@ public class Login extends AppCompatActivity{
                                         e.printStackTrace();
                                     }
 
-                                    String gender = userlocalstore.getgender();
-                                    System.out.println("Gender" + gender);
-                                    if (flag == 1 && gender.equals("male")) {
+                                    String apt = userlocalstore.getdata();
+                                    String gend =userlocalstore.getgender();
+                                    String url  =userlocalstore.geturl();
+
+                                    System.out.println("apt" + apt + gend + url);
+                                    if (flag == 1 && gend.equals("male")) {
                                         System.out.println("Flag Value" + flag);
                                         insertdata();
                                     } else {
@@ -322,7 +325,7 @@ public class Login extends AppCompatActivity{
         pDialog.setMessage("Saving Credentials...");
         pDialog.show();
 
-        String url = "https://mogwliisjunglee.96.lt/userapi.php";
+        String url = "http://mogwliisjunglee.96.lt/userapi.php";
         Map<String, String> params = new HashMap<>();
         params.put("action", "email");
         params.put("email", "yash");

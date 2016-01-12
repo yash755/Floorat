@@ -136,12 +136,13 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
         pDialog.setMessage("Saving Credentials...");
         pDialog.show();
 
-        String url = "http://192.168.1.102/social/noticeapi.php";
+
+        String url = "http://mogwliisjunglee.96.lt/noticeapi.php";
         Map<String, String> params = new HashMap<String, String>();
         params.put("action","insert_notice");
         params.put("heading", heading);
         params.put("url",urls);
-        params.put("aptname",aptname);
+        params.put("apt_name",aptname);
 
         System.out.println("Sending" +params.toString());
 
