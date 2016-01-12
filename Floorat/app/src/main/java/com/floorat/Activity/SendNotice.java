@@ -183,4 +183,6 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
         queue.add(jsObjRequest);
     }
 
+
+
 }
