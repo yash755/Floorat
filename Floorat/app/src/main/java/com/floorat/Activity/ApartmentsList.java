@@ -24,9 +24,11 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.facebook.AccessToken;
 import com.floorat.RequestHandler.CustomRequest;
 import com.floorat.R;
 import com.floorat.SharedPrefrences.UserLocalStore;
+import com.floorat.Utils.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,6 +63,7 @@ public class ApartmentsList extends AppCompatActivity {
 
 /*
 
+
         Button b2 = (Button) findViewById(R.id.button2);
 
         b2.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +73,9 @@ public class ApartmentsList extends AppCompatActivity {
                 startActivity(in);
             }
         });*/
+
     }
+
     @Override
     public void onBackPressed() {
     }
@@ -157,16 +162,10 @@ public class ApartmentsList extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
 
                 userlocalstore.updatedata(query);
-                userlocalstore.setUserloggedIn(true);
 
-                String apt = userlocalstore.getdata();
-                String gend =userlocalstore.getgender();
-                String url  =userlocalstore.geturl();
 
-                System.out.println("apt" + apt + gend + url);
+                insertdata();
 
-                Intent in = new Intent(ApartmentsList.this, Home.class);
-                startActivity(in);
                 return true;
             }
 
@@ -181,6 +180,85 @@ public class ApartmentsList extends AppCompatActivity {
                 return true;
             }
         });
+
+    }
+
+
+
+    void insertdata()
+    {
+        UserLocalStore userLocalStore;
+        final ProgressDialog pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Saving Data...");
+        pDialog.show();
+
+        String apt = userlocalstore.getdata();
+        String name = userlocalstore.getname();
+        String urls = userlocalstore.geturl();
+
+        String url = "http://mogwliisjunglee.96.lt/userapi.php";
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("action", "adduser");
+        params.put("buildingname",apt);
+        params.put("name",name);
+        params.put("urls",urls);
+
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, params, new Response.Listener<JSONArray>() {
+
+            @Override
+            public void onResponse(JSONArray response) {
+                Log.d("Response: ", response.toString());
+                pDialog.hide();
+                fetchresult(response);
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Time Out Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
+                } else if (error instanceof AuthFailureError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Authentication Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
+                } else if (error instanceof ServerError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Server Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
+                } else if (error instanceof NetworkError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Network Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
+                } else if (error instanceof ParseError) {
+                    pDialog.hide();
+                    Log.d("Response: ", error.toString());
+                    Toast.makeText(getApplicationContext(), "Unknown Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(jsObjRequest);
+    }
+
+    void fetchresult(JSONArray response){
+
+        String res = null;
+
+        try {
+            res = response.getString(0);
+            if(res.equals("Success")){
+
+                userlocalstore.setUserloggedIn(true);
+                Intent in = new Intent(ApartmentsList.this, Home.class);
+                startActivity(in);
+
+            }
+            else
+                new Util().showerrormessage(ApartmentsList.this,"Something Went Wrong...." +
+                        "Please Try Later");
+        }
+        catch (JSONException e) {
+        }
+
+
 
     }
 

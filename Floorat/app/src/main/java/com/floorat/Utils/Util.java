@@ -2,7 +2,9 @@ package com.floorat.Utils;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -24,4 +26,18 @@ public class Util {
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             return networkInfo != null && networkInfo.isConnected();
         }
+
+    public void showerrormessage(Context context,String message){
+        AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(context);
+        dialogbuilder.setMessage(message);
+        dialogbuilder.setPositiveButton("OK", new
+                DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+
+                });
+        dialogbuilder.show();
+
+    }
 }

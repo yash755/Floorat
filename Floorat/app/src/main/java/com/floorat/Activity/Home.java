@@ -36,7 +36,6 @@ import com.floorat.Adapter.ViewPagerAdapter;
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    Toolbar toolbar;
     ViewPager pager;
     ViewPagerAdapter adapter;
     SlidingTabLayout tabs;

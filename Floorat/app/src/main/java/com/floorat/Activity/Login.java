@@ -33,6 +33,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.floorat.RequestHandler.CustomRequest;
@@ -109,13 +110,12 @@ public class Login extends AppCompatActivity{
 
         */
 
-
-            login.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    flag = 0;
-                }
-            });
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                flag = 0;
+            }
+        });
 
 
         login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -124,7 +124,7 @@ public class Login extends AppCompatActivity{
 
                 if (AccessToken.getCurrentAccessToken() != null) {
 
-                  GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                    GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
 
 
                         @Override
@@ -132,19 +132,22 @@ public class Login extends AppCompatActivity{
 
                             JSONObject json = response.getJSONObject();
                             System.out.println("Gender " + json.toString());
-                            String gender,name,url;
+                            String gender, name, url;
 
                             try {
                                 if (json != null) {
                                     gender = json.getString("gender");
-                                    name   = json.getString("name");
+                                    name = json.getString("name");
 
-                                   JSONObject picture = json.getJSONObject("picture");
-                                   JSONObject data    = picture.getJSONObject("data");
+                                    if (gender.equals("male"))
+                                        flag++;
 
-                                    url    = data.getString("url");
+                                    JSONObject picture = json.getJSONObject("picture");
+                                    JSONObject data = picture.getJSONObject("data");
 
-                                    userlocalstore.userData(name,gender,url,"null");
+                                    url = data.getString("url");
+
+                                    userlocalstore.userData(name, gender, url, "null");
 
                                 }
 
@@ -182,7 +185,7 @@ public class Login extends AppCompatActivity{
                                         //int result = friend_list.compareTo("50");
 
                                         int result = Integer.parseInt(friend_list);
-                                        if (result > 0) {
+                                        if (result > 50) {
                                             System.out.println("I am" + friend_list);
                                             flag++;
                                         }
@@ -192,17 +195,25 @@ public class Login extends AppCompatActivity{
                                         e.printStackTrace();
                                     }
 
-                                    String apt = userlocalstore.getdata();
-                                    String gend =userlocalstore.getgender();
-                                    String url  =userlocalstore.geturl();
+                                    System.out.println("Flag value" + flag);
 
-                                    System.out.println("apt" + apt + gend + url);
-                                    if (flag == 1 && gend.equals("male")) {
-                                        System.out.println("Flag Value" + flag);
-                                        insertdata();
+                                    if (flag == 2) {
+                                         login.setVisibility(LoginButton.GONE);
+
+
+                                         FacebookSdk.sdkInitialize(getApplicationContext());
+                                         LoginManager.getInstance().logOut();
+
+                                         userlocalstore.setApartment(true);
+
+                                        Intent i = new Intent(getApplicationContext(), ApartmentsList.class);
+                                        startActivity(i);
+
                                     } else {
+                                        FacebookSdk.sdkInitialize(getApplicationContext());
+                                        LoginManager.getInstance().logOut();
                                         System.out.println("Flag Value" + flag);
-                                        showerrormessage("Sorry but you must be female with minimum 50 friends");
+                                        new Util().showerrormessage(Login.this, "Sorry but you must be female with minimum 50 friends");
                                     }
                                 }
                             }
@@ -231,20 +242,6 @@ public class Login extends AppCompatActivity{
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void showerrormessage(String message){
-        AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(Login.this);
-        dialogbuilder.setMessage(message);
-        dialogbuilder.setPositiveButton("OK", new
-                DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        login.performClick();
-                    }
-
-                });
-        dialogbuilder.show();
-
-    }
 
 
     private void init() {
@@ -318,85 +315,6 @@ public class Login extends AppCompatActivity{
         }
 
     }
-
-    void insertdata()
-    {
-        final ProgressDialog pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Saving Credentials...");
-        pDialog.show();
-
-        String url = "http://mogwliisjunglee.96.lt/userapi.php";
-        Map<String, String> params = new HashMap<>();
-        params.put("action", "email");
-        params.put("email", "yash");
-        params.put("pass", "email2");
-
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, params, new Response.Listener<JSONArray>() {
-
-            @Override
-            public void onResponse(JSONArray response) {
-               System.out.println("Response: " + response.toString());
-                pDialog.hide();
-                fetchresult(response);
-
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                    pDialog.hide();
-                    Toast.makeText(getApplicationContext(), "Time Out Error", Toast.LENGTH_SHORT).show();
-                } else if (error instanceof AuthFailureError) {
-                    pDialog.hide();
-                    Toast.makeText(getApplicationContext(), "Authentication Error", Toast.LENGTH_SHORT).show();
-                } else if (error instanceof ServerError) {
-                    pDialog.hide();
-                    Log.d("Response: ", error.toString());
-                    Toast.makeText(getApplicationContext(), "Server Error", Toast.LENGTH_SHORT).show();
-                } else if (error instanceof NetworkError) {
-                    pDialog.hide();
-                    Toast.makeText(getApplicationContext(), "Network Error", Toast.LENGTH_SHORT).show();
-                } else if (error instanceof ParseError) {
-                    pDialog.hide();
-                    Log.d("Response: ", error.toString());
-                    Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(jsObjRequest);
-    }
-
-    void fetchresult(JSONArray response){
-
-        String res = null;
-
-        try {
-            res = response.getString(0);
-            if(res.equals("Success")){
-
-                String apartment = userlocalstore.getdata();
-                System.out.println("Apartment" + apartment);
-
-                userlocalstore.setApartment(true);
-
-                Intent i = new Intent(getApplicationContext(), ApartmentsList.class);
-                startActivity(i);
-            }
-            else
-                showerrormessage("Something Went Wrong...." +
-                                  "Please Try Later");
-        }
-        catch (JSONException e) {
-        }
-
-
-
-    }
-
-
-
 
 
 }

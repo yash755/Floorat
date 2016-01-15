@@ -40,6 +40,11 @@ public class UserLocalStore {
 
         }
 
+    public String getname(){
+        String name = userLocalDatabase.getString("name", "");
+        return name;
+    }
+
     public String getgender(){
 
         String name = userLocalDatabase.getString("gender", "");
@@ -54,6 +59,7 @@ public class UserLocalStore {
 
     }
 
+
         public void setUserloggedIn(boolean loggedIn){
             SharedPreferences.Editor speditor = userLocalDatabase.edit();
             speditor.putBoolean("loggedIn",loggedIn);
@@ -67,6 +73,8 @@ public class UserLocalStore {
         speditor.commit();
 
         }
+
+
 
          public boolean getApartment(){
 
