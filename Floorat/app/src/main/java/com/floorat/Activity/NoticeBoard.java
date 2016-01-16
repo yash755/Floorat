@@ -34,6 +34,7 @@ import com.floorat.SharedPrefrences.UserLocalStore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +67,39 @@ public class NoticeBoard extends AppCompatActivity {
         fetchbuildings();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.home, menu);
+
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+
+        if(adapter1 != null) {
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    //     Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
+                    //     Intent in = new Intent(Home.this, SearchResult.class);
+                    //      startActivity(in);
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+
+                    adapter1.getFilter().filter(newText);
+                    return true;
+                }
+            });
+        }
+        return true;
+    }
+
     void fetchbuildings()
     {
         final ProgressDialog pDialog = new ProgressDialog(this);
@@ -74,7 +108,7 @@ public class NoticeBoard extends AppCompatActivity {
         UserLocalStore userLocalStore;
         userLocalStore = new UserLocalStore(this);
 
-        String url = "http://192.168.1.102/social/noticeapi.php";
+        String url = "http://mogwliisjunglee.96.lt/noticeapi.php";
         Map<String, String> params = new HashMap<String, String>();
         params.put("action", "get_building_notices");
         params.put("building_name", userLocalStore.getdata());
@@ -85,7 +119,7 @@ public class NoticeBoard extends AppCompatActivity {
             public void onResponse(JSONArray response) {
                 Log.d("Response: ", response.toString());
                 pDialog.hide();
-                insertbuildings(response);
+               shownotices(response);
             }
         }, new Response.ErrorListener() {
 
@@ -120,15 +154,15 @@ public class NoticeBoard extends AppCompatActivity {
     }
 
 
-    void insertbuildings(JSONArray response) {
+    void shownotices(JSONArray response) {
         System.out.println("Response is" + response.toString());
-        String name;
-        Integer len = response.length();
 
         for (int i = 0; i < response.length(); i++) {
             try {
-                name = response.getString(i);
-                nlist.add(new Noticelist("Music",name));
+                JSONObject json = response.getJSONObject(i);
+                String head = json.getString("heading");
+                String url  = json.getString("url");
+                nlist.add(new Noticelist(head,url));
 
             } catch (JSONException e) {
             }
@@ -139,37 +173,6 @@ public class NoticeBoard extends AppCompatActivity {
 
     }
 
-            @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
 
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
-
-                if(adapter1 != null) {
-                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                        @Override
-                        public boolean onQueryTextSubmit(String query) {
-                            //     Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
-                            //     Intent in = new Intent(Home.this, SearchResult.class);
-                            //      startActivity(in);
-                            return true;
-                        }
-
-                        @Override
-                        public boolean onQueryTextChange(String newText) {
-
-                            adapter1.getFilter().filter(newText);
-                            return true;
-                        }
-                    });
-                }
-        return true;
-    }
 }
 

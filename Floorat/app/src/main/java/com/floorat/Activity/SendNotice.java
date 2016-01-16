@@ -1,7 +1,7 @@
 package com.floorat.Activity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,35 +9,28 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
-import com.floorat.RequestHandler.CustomRequest;
 import com.floorat.R;
+import com.floorat.RequestHandler.ImageUploadRequest;
 import com.floorat.SharedPrefrences.UserLocalStore;
 
-import org.json.JSONArray;
-
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.UUID;
 
 public class SendNotice extends AppCompatActivity  implements View.OnClickListener {
 
@@ -48,11 +41,14 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
     EditText heading;
 
 
+    ProgressBar progressBar;
     private ImageView imageView;
 
     private Bitmap bitmap;
 
     private Uri filePath;
+
+    long totalSize = 0;
 
 
     @Override
@@ -70,6 +66,8 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
         buttonUpload = (Button) findViewById(R.id.buttonUpload);
 
         imageView = (ImageView) findViewById(R.id.imageView);
+
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         buttonChoose.setOnClickListener(this);
         buttonUpload.setOnClickListener(this);
@@ -91,12 +89,16 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
             filePath = data.getData();
+            String tempPath = getPath(filePath);
+            System.out.println("Filename123" + tempPath);
+
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 imageView.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         }
     }
 
@@ -119,7 +121,8 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
             String aptname=userLocalStore.getdata();
             String uploadImage = getStringImage(bitmap);
             String head = heading.getText().toString();
-            insertdata(head, uploadImage,aptname);
+            uploadFile(filePath.getPath().toString(),"upload");
+
         }
     }
 
@@ -130,7 +133,25 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
 
     }
 
-    void insertdata(String heading,String urls,String aptname)
+    public String getPath(Uri uri) {
+
+        System.out.println("Filename124" + uri);
+        if( uri == null ) {
+            System.out.println("Filename125" + uri);
+            return null;
+        }
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if( cursor != null ){
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        return uri.getPath();
+    }
+
+  /*  void insertdata(String heading,String urls,String aptname)
     {
         final ProgressDialog pDialog = new ProgressDialog(this);
         pDialog.setMessage("Saving Credentials...");
@@ -182,4 +203,136 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(jsObjRequest);
     }
+
 }
+
+
+*/
+
+    private void sendnotice(String heading,Bitmap urls,String aptname) {
+
+        ImageUploadRequest imageUploadRequest = new ImageUploadRequest(this);
+        imageUploadRequest.fetchuserdatainbackground(getApplicationContext(), urls);
+
+    }
+
+    public void uploadFile(String sourceFileUri,String action) {
+        HttpURLConnection conn ;
+        DataOutputStream dos;
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "*****";
+        int bytesRead, bytesAvailable, bufferSize;
+        byte[] buffer;
+        int maxBufferSize = 1 * 1024 * 1024;
+        File oldFile = new File(sourceFileUri);
+
+        String fileExt = "jpg";
+        String imageid = UUID.randomUUID().toString().replaceAll("-", "");
+
+        File sourceFile = new File(oldFile.getParent(), imageid + "."+fileExt);
+        oldFile.renameTo(sourceFile);
+
+        String fileName = sourceFile.getName();
+
+        System.out.println("Filename" + fileName + "-----" + sourceFileUri);
+
+        try {
+
+            // open a URL connection to the Servlet
+            FileInputStream fileInputStream = new FileInputStream(
+                    sourceFile);
+            URL url = new URL("http://mogwliisjunglee.96.lt/noticeapi.php");
+
+            // Open a HTTP connection to the URL
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setDoInput(true); // Allow Inputs
+            conn.setDoOutput(true); // Allow Outputs
+            conn.setUseCaches(false); // Don't use a Cached Copy
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Connection", "Keep-Alive");
+            conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+            conn.setRequestProperty("Content-Type",
+                    "multipart/form-data;boundary=" + boundary);
+            conn.setRequestProperty("uploaded_file", fileName);
+            conn.setRequestProperty("action", action);
+
+            dos = new DataOutputStream(conn.getOutputStream());
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
+                    + fileName + "\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+
+            // create a buffer of maximum size
+            bytesAvailable = fileInputStream.available();
+
+            bufferSize = Math.min(bytesAvailable, maxBufferSize);
+            buffer = new byte[bufferSize];
+
+            // read file and write it into form...
+            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+            while (bytesRead > 0) {
+
+                dos.write(buffer, 0, bufferSize);
+                bytesAvailable = fileInputStream.available();
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+            }
+
+            // send multipart form data necesssary after file data...
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+            // Responses from the server (code and message)
+            int serverResponseCode = conn.getResponseCode();
+            String serverResponseMessage = conn.getResponseMessage();
+
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuffer responsebuffer = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                responsebuffer.append(inputLine);
+            }
+
+            // print result
+            String resStr = responsebuffer.toString();
+
+            in.close();
+
+            // close the streams //
+            fileInputStream.close();
+            dos.flush();
+            dos.close();
+
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static String getFileType(String url)
+    {
+
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        if (extension != null) {
+            MimeTypeMap mime = MimeTypeMap.getSingleton();
+            type = mime.getMimeTypeFromExtension(extension);
+        }
+        return type;
+    }
+
+
+
+
+}
+
+
+

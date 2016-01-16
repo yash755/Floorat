@@ -182,7 +182,7 @@ public class ApartmentsList extends AppCompatActivity {
         });
 
     }
-<<<<<<< Updated upstream
+
 
 
 
@@ -264,8 +264,4 @@ public class ApartmentsList extends AppCompatActivity {
     }
 
 
-
-
-=======
->>>>>>> Stashed changes
 }
