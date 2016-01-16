@@ -11,7 +11,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.transition.Explode;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -26,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.floorat.ImageUtils.DownloadImageTask;
-import com.floorat.ImageUtils.ImageLoader;
 import com.floorat.R;
 import com.floorat.Adapter.SlidingTabLayout;
 import com.floorat.SharedPrefrences.UserLocalStore;
@@ -92,17 +90,15 @@ public class Home extends AppCompatActivity
         toggle.syncState();
 
 
-
-        String url = userLocalStore.geturl();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        View header = LayoutInflater.from(this).inflate(R.layout.nav_header_home, null);
-        navigationView.addHeaderView(header);
+        String url = userLocalStore.geturl();
+        System.out.println("Url : "+url);
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
-        ImageView image=(ImageView)header.findViewById(R.id.header);
-        new DownloadImageTask(image).execute(url);
+        ImageView image=(ImageView)navigationView.findViewById(R.id.id_is);
+         new DownloadImageTask(image).execute(url);
     }
 
     @Override
@@ -169,11 +165,11 @@ public class Home extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camara) {
-            // Handle the camera action
+            Toast.makeText(getApplicationContext(), "selected", Toast.LENGTH_SHORT).show();
+            System.out.println("selected");
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getWindow().setExitTransition(new Explode());
 
@@ -215,6 +211,9 @@ public class Home extends AppCompatActivity
         }
     }
 
-
-
+    public void viewProfile(View view)
+    {
+        Intent i = new Intent(Home.this, Profile.class);
+        startActivity(i);
+    }
 }

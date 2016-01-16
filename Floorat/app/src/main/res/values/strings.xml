@@ -22,5 +22,6 @@
     </string-array>
     <string name="title_activity_notice_board">NoticeBoard</string>
     <string name="title_activity_send_notice">SendNotice</string>
+    <string name="title_activity_profile">Profile</string>
 
 </resources>

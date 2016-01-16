@@ -182,7 +182,4 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(jsObjRequest);
     }
-
-
-
 }

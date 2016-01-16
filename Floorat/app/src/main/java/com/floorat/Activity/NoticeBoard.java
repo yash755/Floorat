@@ -30,6 +30,7 @@ import com.floorat.RequestHandler.CustomRequest;
 import com.floorat.Adapter.Noticeboardlistadapter;
 import com.floorat.Objects.Noticelist;
 import com.floorat.R;
+import com.floorat.SharedPrefrences.UserLocalStore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,11 +64,6 @@ public class NoticeBoard extends AppCompatActivity {
         });
 
         fetchbuildings();
-
-
-
-
-
     }
 
     void fetchbuildings()
@@ -75,10 +71,13 @@ public class NoticeBoard extends AppCompatActivity {
         final ProgressDialog pDialog = new ProgressDialog(this);
         pDialog.setMessage("Fetching Building List...");
         pDialog.show();
+        UserLocalStore userLocalStore;
+        userLocalStore = new UserLocalStore(this);
 
         String url = "http://192.168.1.102/social/noticeapi.php";
         Map<String, String> params = new HashMap<String, String>();
-        params.put("action", "get_url");
+        params.put("action", "get_building_notices");
+        params.put("building_name", userLocalStore.getdata());
 
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, params, new Response.Listener<JSONArray>() {
 
@@ -140,10 +139,6 @@ public class NoticeBoard extends AppCompatActivity {
 
     }
 
-
-
-
-
             @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -174,14 +169,7 @@ public class NoticeBoard extends AppCompatActivity {
                         }
                     });
                 }
-
         return true;
     }
-
-
-
-
-
-
 }
 

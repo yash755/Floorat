@@ -11,6 +11,25 @@
     <android.support.design.widget.NavigationView android:id="@+id/nav_view"
         android:layout_width="wrap_content" android:layout_height="match_parent"
         android:layout_gravity="start" android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_home" app:menu="@menu/activity_home_drawer" />
+        app:headerLayout="@layout/nav_header_home" app:menu="@menu/activity_home_drawer">
 
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/nav_header_height"
+            android:background="#5DADE2"
+
+            android:theme="@style/ThemeOverlay.AppCompat.Dark" android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="103dp"
+                android:layout_height="120dp"
+                android:paddingTop="@dimen/nav_header_vertical_spacing"
+                android:scaleType="centerCrop"
+                android:src="@drawable/account"
+                android:id="@+id/id_is"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:onClick="viewProfile"/>
+        </LinearLayout>
+    </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>
