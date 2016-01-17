@@ -183,9 +183,6 @@ public class ApartmentsList extends AppCompatActivity {
 
     }
 
-
-
-
     void insertdata()
     {
         UserLocalStore userLocalStore;
@@ -262,6 +259,4 @@ public class ApartmentsList extends AppCompatActivity {
 
 
     }
-
-
 }

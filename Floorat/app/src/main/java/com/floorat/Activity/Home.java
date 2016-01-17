@@ -168,6 +168,19 @@ public class Home extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "selected", Toast.LENGTH_SHORT).show();
             System.out.println("selected");
         } else if (id == R.id.nav_gallery) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setExitTransition(new Explode());
+
+                Intent intent = new Intent(this, BuySell.class);
+                startActivity(intent,
+                        ActivityOptions
+                                .makeSceneTransitionAnimation(this).toBundle());
+            }
+            else{
+                Intent intent = new Intent(this, BuySell.class);
+                startActivity(intent);
+            }
+
 
         } else if (id == R.id.nav_slideshow) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -183,10 +196,7 @@ public class Home extends AppCompatActivity
                 startActivity(intent);
             }
 
-
-
         } else if (id == R.id.nav_manage) {
-
 
 
         } else if (id == R.id.nav_share) {

@@ -87,6 +87,26 @@
             android:label="@string/title_activity_profile"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".Adapter.NoticeImage_fullscreen"
+            android:label="@string/title_activity_notice_image_fullscreen"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".Activity.BuySell"
+            android:label="@string/title_activity_buy_sell"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".UploadClassifieds"
+            android:label="@string/title_activity_upload_classifieds"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".Activity.Classifieds"
+            android:label="@string/title_activity_classifieds"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>

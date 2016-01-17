@@ -23,5 +23,15 @@
     <string name="title_activity_notice_board">NoticeBoard</string>
     <string name="title_activity_send_notice">SendNotice</string>
     <string name="title_activity_profile">Profile</string>
+    <string name="title_activity_notice_image_fullscreen">NoticeImage_fullscreen</string>
+    <string name="title_activity_buy_sell">BuySell</string>
+    <string name="title_activity_upload_classifieds">UploadClassifieds</string>
+
+
+    <string-array name="condition">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+    <string name="title_activity_classifieds">Classifieds</string>
 
 </resources>

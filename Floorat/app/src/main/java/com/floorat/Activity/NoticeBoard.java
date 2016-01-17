@@ -79,7 +79,6 @@ public class NoticeBoard extends AppCompatActivity {
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
 
-        if(adapter1 != null) {
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
@@ -91,12 +90,10 @@ public class NoticeBoard extends AppCompatActivity {
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
-
                     adapter1.getFilter().filter(newText);
                     return true;
                 }
             });
-        }
         return true;
     }
 
@@ -170,9 +167,5 @@ public class NoticeBoard extends AppCompatActivity {
         ListView li = (ListView) findViewById(R.id.notices);
         adapter1 = new Noticeboardlistadapter(NoticeBoard.this,nlist);
         li.setAdapter(adapter1);
-
     }
-
-
 }
-

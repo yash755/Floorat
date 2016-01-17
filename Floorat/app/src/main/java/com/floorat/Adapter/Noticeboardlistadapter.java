@@ -2,13 +2,17 @@ package com.floorat.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.floorat.ImageUtils.ImageLoader;
@@ -24,10 +28,14 @@ public class Noticeboardlistadapter extends BaseAdapter implements Filterable {
     LayoutInflater inflater;
     private Activity activity;
     public ImageLoader imageLoader;
+    public Context ctx;
+    public boolean isImageFitToScreen;
+    ImageView image;
 
     public Noticeboardlistadapter(Context context, ArrayList<Noticelist> nlist) {
         this.mOriginalValues = nlist;
         this.mDisplayedValues = nlist;
+        ctx = context;
         inflater = LayoutInflater.from(context);
     }
 
@@ -54,7 +62,7 @@ public class Noticeboardlistadapter extends BaseAdapter implements Filterable {
         return position;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View vi=convertView;
         if(convertView==null)
             vi = inflater.inflate(R.layout.noticeboard_rowview, null);
@@ -62,13 +70,51 @@ public class Noticeboardlistadapter extends BaseAdapter implements Filterable {
         TextView text=(TextView)vi.findViewById(R.id.heading);
         text.setText(mDisplayedValues.get(position).heading);
 
-        ImageView image=(ImageView)vi.findViewById(R.id.image);
+        image=(ImageView)vi.findViewById(R.id.image);
         imageLoader.DisplayImage(mDisplayedValues.get(position).url, image);
+
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity, NoticeImage_fullscreen.class);
+                intent.putExtra("url", mDisplayedValues.get(position).url);
+                activity.startActivity(intent);
+            }
+        });
+
+
+       /* image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isImageFitToScreen) {
+                    isImageFitToScreen = false;
+                    image.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                    image.setAdjustViewBounds(true);
+                } else {
+                    isImageFitToScreen = true;
+                    image.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+                    image.setScaleType(ImageView.ScaleType.FIT_XY);
+
+  /*                float scaleHeigth = ctx.getResources().getDisplayMetrics().heightPixels;
+                    float scaleWidth = ctx.getResources().getDisplayMetrics().widthPixels;
+                    image.setLayoutParams(new LinearLayout.LayoutParams((int)scaleWidth , (int)scaleHeigth));
+                    image.setScaleType(ImageView.ScaleType.FIT_XY);
+
+                }
+  /*            image.setScaleType(ImageView.ScaleType.FIT_XY);
+                AlertDialog dlg = eula.show();
+                WindowManager.LayoutParams lp = dlg.getWindow().getAttributes();
+
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+                getSupportActionBar().hide();
+
+            }
+        });
+*/
         return vi;
 
     }
-
-    
 
     @Override
     public Filter getFilter() {
@@ -119,4 +165,4 @@ public class Noticeboardlistadapter extends BaseAdapter implements Filterable {
         };
         return filter;
     }
-}
+ }
