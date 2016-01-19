@@ -1,35 +1,29 @@
 package com.floorat.RequestHandler;
 
+
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-
-import com.floorat.Activity.SendNotice;
 import com.floorat.Utils.Util;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
-public class ImageUploadRequest {
+public class SendNoticeRequest {
+
     ProgressDialog progressDialog;
 
-    public ImageUploadRequest (Context context){
+    public SendNoticeRequest (Context context){
 
         progressDialog = new ProgressDialog(context);
         progressDialog.setCancelable(false);
@@ -40,9 +34,9 @@ public class ImageUploadRequest {
     }
 
 
-    public void fetchuserdatainbackground(Context context,String user){
+    public void fetchuserdatainbackground(Context context,String user,String aptname,String head){
         progressDialog.show();
-        new fetchuserdataasynctask(context,user).execute();
+        new fetchuserdataasynctask(context,user,aptname,head).execute();
     }
 
 
@@ -50,13 +44,17 @@ public class ImageUploadRequest {
     public class fetchuserdataasynctask extends AsyncTask<Void,Void,String> {
 
         String user;
+        String aptname;
+        String head;
         Context context;
 
 
 
-        public fetchuserdataasynctask(Context context,String user){
+        public fetchuserdataasynctask(Context context,String user,String aptname,String head){
 
             this.user = user;
+            this.aptname = aptname;
+            this.head = head;
             this.context = context;
 
 
@@ -104,13 +102,49 @@ public class ImageUploadRequest {
                     conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
                     conn.setRequestProperty("uploaded_file", fileName);
 
+
                     dos = new DataOutputStream(conn.getOutputStream());
+
+                    // add parameters
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"head\""
+                            + lineEnd);
+                    dos.writeBytes(lineEnd);
+
+                    // assign value
+                    dos.writeBytes("send_notice");
+                    dos.writeBytes(lineEnd);
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+                    // add parameters
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"action\""
+                            + lineEnd);
+                    dos.writeBytes(lineEnd);
+
+                    // assign value
+                    dos.writeBytes(head);
+                    dos.writeBytes(lineEnd);
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+                    // add parameters
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"aptname\""
+                            + lineEnd);
+                    dos.writeBytes(lineEnd);
+
+                    // assign value
+                    dos.writeBytes(aptname);
+                    dos.writeBytes(lineEnd);
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
 
                     dos.writeBytes(twoHyphens + boundary + lineEnd);
                     dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
                             + fileName + "\"" + lineEnd);
 
                     dos.writeBytes(lineEnd);
+
+
 
                     // create a buffer of  maximum size
                     bytesAvailable = fileInputStream.available();
@@ -199,16 +233,19 @@ public class ImageUploadRequest {
         @Override
         protected void onPostExecute(String response) {
             super.onPostExecute(null);
+            String aresponse = response.substring(2,response.length()-3);
+
+            System.out.println("Aresponse" + response);
+
             progressDialog.dismiss();
-            String aresponse = response.substring(1,response.length()-2);
+            Toast.makeText(context, aresponse, Toast.LENGTH_SHORT).show();
 
-            System.out.println("Resonse which is:" + aresponse);
 
-            Toast.makeText(context,aresponse, Toast.LENGTH_SHORT).show();
+
+
         }
     }
 
 
 
 }
-

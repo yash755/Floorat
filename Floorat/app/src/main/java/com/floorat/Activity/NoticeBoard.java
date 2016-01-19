@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import com.floorat.Adapter.Noticeboardlistadapter;
 import com.floorat.Objects.Noticelist;
 import com.floorat.R;
 import com.floorat.SharedPrefrences.UserLocalStore;
+import com.floorat.Utils.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -82,14 +84,15 @@ public class NoticeBoard extends AppCompatActivity {
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-                    //     Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
-                    //     Intent in = new Intent(Home.this, SearchResult.class);
-                    //      startActivity(in);
+                    new Util().hideSoftKeyboard(NoticeBoard.this);
                     return true;
                 }
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
+
+                    System.out.println("Query" + newText);
+
                     adapter1.getFilter().filter(newText);
                     return true;
                 }
@@ -125,24 +128,24 @@ public class NoticeBoard extends AppCompatActivity {
                 if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                     pDialog.hide();
                     Toast.makeText(getApplicationContext(), "Time Out Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                 //   startActivity(new Intent(getApplicationContext(),Home.class));
+                    startActivity(new Intent(getApplicationContext(), Home.class));
                 } else if (error instanceof AuthFailureError) {
                     pDialog.hide();
                     Toast.makeText(getApplicationContext(), "Authentication Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                  //  startActivity(new Intent(getApplicationContext(), Home.class));
+                    startActivity(new Intent(getApplicationContext(), Home.class));
                 } else if (error instanceof ServerError) {
                     pDialog.hide();
                     Toast.makeText(getApplicationContext(), "Server Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                  //  startActivity(new Intent(getApplicationContext(), Home.class));
+                    startActivity(new Intent(getApplicationContext(), Home.class));
                 } else if (error instanceof NetworkError) {
                     pDialog.hide();
                     Toast.makeText(getApplicationContext(), "Network Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                   // startActivity(new Intent(getApplicationContext(), Home.class));
+                    startActivity(new Intent(getApplicationContext(), Home.class));
                 } else if (error instanceof ParseError) {
                     pDialog.hide();
                     Log.d("Response: ", error.toString());
                     Toast.makeText(getApplicationContext(), "Unknown Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                   // startActivity(new Intent(getApplicationContext(), Home.class));
+                    startActivity(new Intent(getApplicationContext(), Home.class));
                 }
             }
         });

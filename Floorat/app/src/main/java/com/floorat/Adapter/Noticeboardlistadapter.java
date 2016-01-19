@@ -67,8 +67,6 @@ public class Noticeboardlistadapter extends BaseAdapter implements Filterable {
         if(convertView==null)
             vi = inflater.inflate(R.layout.noticeboard_rowview, null);
 
-        TextView text=(TextView)vi.findViewById(R.id.heading);
-        text.setText(mDisplayedValues.get(position).heading);
 
         image=(ImageView)vi.findViewById(R.id.image);
         imageLoader.DisplayImage(mDisplayedValues.get(position).url, image);
@@ -115,6 +113,7 @@ public class Noticeboardlistadapter extends BaseAdapter implements Filterable {
         return vi;
 
     }
+
 
     @Override
     public Filter getFilter() {
