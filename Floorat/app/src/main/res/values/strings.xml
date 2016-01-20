@@ -33,5 +33,6 @@
         <item>No</item>
     </string-array>
     <string name="title_activity_classifieds">Classifieds</string>
+    <string name="title_activity_view_classified">ViewClassified</string>
 
 </resources>

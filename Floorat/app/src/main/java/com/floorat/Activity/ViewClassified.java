@@ -3,6 +3,7 @@ package com.floorat.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -11,15 +12,16 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.floorat.Adapter.ClassifiedsAdapter;
+import com.floorat.Adapter.CommentsAdapter;
 import com.floorat.R;
 import com.floorat.UploadClassifieds;
 
-public class Classifieds extends AppCompatActivity {
+public class ViewClassified extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_classifieds);
+        setContentView(R.layout.activity_view_classified);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -27,14 +29,16 @@ public class Classifieds extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Classifieds.this, UploadClassifieds.class);
-                startActivity(intent);
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
 
+
+
         String[] foods = {"Name" , "Name" , "Name" , "Name" , "Name" , "Name" , "Name" , "Name"};
-        ListAdapter adpt = new ClassifiedsAdapter(this, foods);
-        ListView list = (ListView)findViewById(R.id.listView2);
+        ListAdapter adpt = new CommentsAdapter(this, foods);
+        ListView list = (ListView)findViewById(R.id.listView3);
         list.setAdapter(adpt);
 
 
@@ -43,11 +47,18 @@ public class Classifieds extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         String name = String.valueOf(parent.getItemAtPosition(position));
-                            Intent intent = new Intent(getBaseContext(), ViewClassified.class);
-                            intent.putExtra("ans", name);
-                            startActivity(intent);
+                        Intent intent = new Intent(getBaseContext(), ViewClassified.class);
+                        intent.putExtra("ans", name);
+                        startActivity(intent);
                     }
                 }
         );
+
+
     }
+
 }
+
+
+
+

@@ -107,6 +107,11 @@
             android:label="@string/title_activity_classifieds"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".Activity.ViewClassified"
+            android:label="@string/title_activity_view_classified"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>
