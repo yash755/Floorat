@@ -1,35 +1,29 @@
 package com.floorat.RequestHandler;
 
+
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-
-import com.floorat.Activity.SendNotice;
 import com.floorat.Utils.Util;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
-public class ImageUploadRequest {
+public class SendAd {
+
     ProgressDialog progressDialog;
 
-    public ImageUploadRequest (Context context){
+    public SendAd (Context context){
 
         progressDialog = new ProgressDialog(context);
         progressDialog.setCancelable(false);
@@ -40,23 +34,39 @@ public class ImageUploadRequest {
     }
 
 
-    public void fetchuserdatainbackground(Context context,String user){
+    public void fetchuserdatainbackground(Context context,String selectedImagePath,String aptname,String title,
+                                          String description,String contact,String price,String sp1,String category){
         progressDialog.show();
-        new fetchuserdataasynctask(context,user).execute();
+        new fetchuserdataasynctask(context,selectedImagePath,aptname,title,description,contact,price,sp1,category).execute();
     }
 
 
 
     public class fetchuserdataasynctask extends AsyncTask<Void,Void,String> {
 
-        String user;
+        String selectedimagepath;
+        String aptname;
+        String title;
+        String description;
+        String contact;
+        String price;
+        String sp1;
+        String category;
         Context context;
 
 
 
-        public fetchuserdataasynctask(Context context,String user){
+        public fetchuserdataasynctask(Context context,String selectedImagePath,String aptname,String title,
+                                      String description,String contact,String price,String sp1,String category){
 
-            this.user = user;
+            this.selectedimagepath = selectedImagePath;
+            this.aptname = aptname;
+            this.title = title;
+            this.description=description;
+            this.contact = contact;
+            this.price=price;
+            this.sp1=sp1;
+            this.category = category;
             this.context = context;
 
 
@@ -65,8 +75,9 @@ public class ImageUploadRequest {
         @Override
         protected String doInBackground(Void... voids) {
 
-            String fileName = user;
+            String fileName = selectedimagepath;
             int serverResponseCode = 0;
+            System.out.println("Aresponse" + selectedimagepath);
 
             HttpURLConnection conn = null;
             DataOutputStream dos = null;
@@ -76,7 +87,7 @@ public class ImageUploadRequest {
             int bytesRead, bytesAvailable, bufferSize;
             byte[] buffer;
             int maxBufferSize = 1 * 1024 * 1024;
-            File sourceFile = new File(user);
+            File sourceFile = new File(selectedimagepath);
 
             if (!sourceFile.isFile()) {
 
@@ -90,7 +101,7 @@ public class ImageUploadRequest {
 
                     // open a URL connection to the Servlet
                     FileInputStream fileInputStream = new FileInputStream(sourceFile);
-                    URL url = new URL("http://mogwliisjunglee.96.lt/uploadimage.php");
+                    URL url = new URL("http://mogwliisjunglee.96.lt/uploadclassified.php");
 
                     // Open a HTTP  connection to  the URL
                     conn = (HttpURLConnection) url.openConnection();
@@ -104,13 +115,94 @@ public class ImageUploadRequest {
                     conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
                     conn.setRequestProperty("uploaded_file", fileName);
 
+
                     dos = new DataOutputStream(conn.getOutputStream());
+
+
+                    // add parameters
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"title\""
+                            + lineEnd);
+                    dos.writeBytes(lineEnd);
+
+                    // assign value
+                    dos.writeBytes(title);
+                    dos.writeBytes(lineEnd);
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+                    // add parameters
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"category\""
+                            + lineEnd);
+                    dos.writeBytes(lineEnd);
+
+                    // assign value
+                    dos.writeBytes(category);
+                    dos.writeBytes(lineEnd);
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+                    // add parameters
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"description\""
+                            + lineEnd);
+                    dos.writeBytes(lineEnd);
+
+                    // assign value
+                    dos.writeBytes(description);
+                    dos.writeBytes(lineEnd);
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+                    // add parameters
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"contact\""
+                            + lineEnd);
+                    dos.writeBytes(lineEnd);
+
+                    // assign value
+                    dos.writeBytes(contact);
+                    dos.writeBytes(lineEnd);
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+                    // add parameters
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"price\""
+                            + lineEnd);
+                    dos.writeBytes(lineEnd);
+
+                    // assign value
+                    dos.writeBytes(price);
+                    dos.writeBytes(lineEnd);
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+                    // add parameters
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"sp1\""
+                            + lineEnd);
+                    dos.writeBytes(lineEnd);
+
+                    // assign value
+                    dos.writeBytes(sp1);
+                    dos.writeBytes(lineEnd);
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+                    // add parameters
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"aptname\""
+                            + lineEnd);
+                    dos.writeBytes(lineEnd);
+
+                    // assign value
+                    dos.writeBytes(aptname);
+                    dos.writeBytes(lineEnd);
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
 
                     dos.writeBytes(twoHyphens + boundary + lineEnd);
                     dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
                             + fileName + "\"" + lineEnd);
 
                     dos.writeBytes(lineEnd);
+
+
 
                     // create a buffer of  maximum size
                     bytesAvailable = fileInputStream.available();
@@ -175,14 +267,14 @@ public class ImageUploadRequest {
 
                     progressDialog.dismiss();
                     ex.printStackTrace();
-                    return  "MalformedURLException Exception";
+                    return  "[MalformedURLException Exception]";
 
 
                 } catch (Exception e) {
 
                     progressDialog.dismiss();
                     e.printStackTrace();
-                    return "Time Out try later !!!";
+                    return "[Time Out try later !!!]";
 
                 }
 
@@ -199,16 +291,19 @@ public class ImageUploadRequest {
         @Override
         protected void onPostExecute(String response) {
             super.onPostExecute(null);
+            String aresponse = response.substring(2,response.length()-3);
+
+            System.out.println("Aresponse" + response + "/nrsese" + aresponse);
+
             progressDialog.dismiss();
-            String aresponse = response.substring(1,response.length()-2);
+            Toast.makeText(context, aresponse, Toast.LENGTH_SHORT).show();
 
-            System.out.println("Resonse which is:" + aresponse);
 
-            Toast.makeText(context,aresponse, Toast.LENGTH_SHORT).show();
+
+
         }
     }
 
 
 
 }
-

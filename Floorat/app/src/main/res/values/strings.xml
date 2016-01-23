@@ -29,8 +29,8 @@
 
 
     <string-array name="condition">
-        <item>Yes</item>
-        <item>No</item>
+        <item>Old</item>
+        <item>New</item>
     </string-array>
     <string name="title_activity_classifieds">Classifieds</string>
     <string name="title_activity_view_classified">ViewClassified</string>

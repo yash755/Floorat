@@ -290,7 +290,6 @@ public class Login extends AppCompatActivity{
             @Override
             public void onPageSelected(int position) {
                 currentPage = position;
-
             }
 
             @Override

@@ -41,6 +41,7 @@ public class SendNoticeRequest {
 
 
 
+
     public class fetchuserdataasynctask extends AsyncTask<Void,Void,String> {
 
         String user;
@@ -181,42 +182,28 @@ public class SendNoticeRequest {
                     rd.close();
 
 
-                    // Responses from the server (code and message)
-                    serverResponseCode = conn.getResponseCode();
-                    String serverResponseMessage = conn.getResponseMessage();
-
-                    Log.i("uploadFile", "HTTP Response is : "
-                            + serverResponseMessage + ": " + serverResponseCode);
-
-                  /*  if (serverResponseCode == 200) {
-
-                        progressDialog.dismiss();
-
-                       return  "File Upload Completed";
-
-                        // return response.toString();
-
-                    }*/
-
                     //close the streams //
                     fileInputStream.close();
                     dos.flush();
                     dos.close();
 
-                    return response.toString();
+               //     System.out.println("Response");
+                    System.out.println("Response" + response.toString());
+                    String aresponse = response.substring(2,response.length()-3);
+                    return aresponse;
 
                 } catch (MalformedURLException ex) {
 
                     progressDialog.dismiss();
                     ex.printStackTrace();
-                    return  "MalformedURLException Exception";
+                    return  "[MalformedURLException Exception]";
 
 
                 } catch (Exception e) {
 
                     progressDialog.dismiss();
                     e.printStackTrace();
-                    return "Time Out try later !!!";
+                    return "[Time Out try later !!!]";
 
                 }
 
@@ -232,16 +219,11 @@ public class SendNoticeRequest {
 
         @Override
         protected void onPostExecute(String response) {
-            super.onPostExecute(null);
-            String aresponse = response.substring(2,response.length()-3);
-
-            System.out.println("Aresponse" + response);
 
             progressDialog.dismiss();
-            Toast.makeText(context, aresponse, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
 
-
-
+            super.onPostExecute(null);
 
         }
     }

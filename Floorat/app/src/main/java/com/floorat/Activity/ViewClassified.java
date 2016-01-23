@@ -14,7 +14,6 @@ import android.widget.ListView;
 import com.floorat.Adapter.ClassifiedsAdapter;
 import com.floorat.Adapter.CommentsAdapter;
 import com.floorat.R;
-import com.floorat.UploadClassifieds;
 
 public class ViewClassified extends AppCompatActivity {
 

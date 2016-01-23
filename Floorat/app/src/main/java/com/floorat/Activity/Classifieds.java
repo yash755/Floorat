@@ -10,11 +10,13 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+
 import com.floorat.Adapter.ClassifiedsAdapter;
 import com.floorat.R;
-import com.floorat.UploadClassifieds;
 
 public class Classifieds extends AppCompatActivity {
+
+    String category;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,11 +25,15 @@ public class Classifieds extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Bundle extras = getIntent().getExtras();
+        category = extras.getString("cat");
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Classifieds.this, UploadClassifieds.class);
+                intent.putExtra("cat",category);
                 startActivity(intent);
             }
         });

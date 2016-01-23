@@ -33,7 +33,7 @@ public class BuySell extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy_sell);
 
-        final String [] category_name={"Electronics","Property","Mobile & Tablets","Vehicle","Home & Lifestyle"};
+        final String [] category_name={"Electronics","Property","Mobiles & Tablets","Vehicle","Home & Lifestyle"};
         int [] category_img={R.drawable.nic,R.drawable.nic,R.drawable.nic,R.drawable.nic,R.drawable.nic};
 
         ListAdapter myadpt1 = new BuySelllistadapter(this, category_name, category_img);
@@ -45,7 +45,7 @@ public class BuySell extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Intent intent = new Intent(getBaseContext(), Classifieds.class);
-                            intent.putExtra("ans", category_name[position]);
+                            intent.putExtra("cat", category_name[position]);
                             startActivity(intent);
                         }
                 }

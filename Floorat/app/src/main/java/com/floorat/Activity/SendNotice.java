@@ -1,10 +1,14 @@
 package com.floorat.Activity;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -21,21 +25,29 @@ import com.floorat.ImageUtils.ImageFilePath;
 import com.floorat.R;
 import com.floorat.RequestHandler.SendNoticeRequest;
 import com.floorat.SharedPrefrences.UserLocalStore;
+import com.floorat.Utils.Util;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
+
+import com.floorat.RequestHandler.GetUserCallBack;;
 
 public class SendNotice extends AppCompatActivity  implements View.OnClickListener {
 
     private int PICK_IMAGE_REQUEST = 1;
+    private int REQUEST_CAMERA     = 2;
 
     private Button buttonChoose;
     private Button buttonUpload;
@@ -45,6 +57,8 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
 
     private Bitmap bitmap;
     String selectedImagePath;
+
+    Uri picUri;
 
 
 
@@ -81,7 +95,26 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+        if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK) {
+
+            Uri uri=picUri;
+
+            selectedImagePath = ImageFilePath.getPath(getApplicationContext(), uri);
+            System.out.println("File Path " + selectedImagePath);
+
+
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                imageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+        else if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
 
             Uri selectedImageUri = data.getData();
@@ -104,7 +137,7 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
     @Override
     public void onClick(View v) {
         if (v == buttonChoose) {
-            showFileChoosen();
+            selectImage();
         }
         if(v == buttonUpload){
 
@@ -134,7 +167,7 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
     private void sendnotice(String path,String aptname,String head) {
 
         SendNoticeRequest sendNoticeRequest = new SendNoticeRequest(this);
-       sendNoticeRequest.fetchuserdatainbackground(getApplicationContext(), path, aptname, head);
+        sendNoticeRequest.fetchuserdatainbackground(getApplicationContext(), path, aptname, head);
 
     }
 
@@ -142,111 +175,66 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
         return !heading.getText().toString().trim().equals("") && selectedImagePath != null;
     }
 
-    public void uploadFile(String sourceFileUri,String action) {
-        HttpURLConnection conn ;
-        DataOutputStream dos;
-        String lineEnd = "\r\n";
-        String twoHyphens = "--";
-        String boundary = "*****";
-        int bytesRead, bytesAvailable, bufferSize;
-        byte[] buffer;
-        int maxBufferSize = 1 * 1024 * 1024;
-        File oldFile = new File(sourceFileUri);
+    private void selectImage() {
+        final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(SendNotice.this);
+        builder.setTitle("Add Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("Take Photo")) {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        String fileExt = "jpg";
-        String imageid = UUID.randomUUID().toString().replaceAll("-", "");
+                    File file=getOutputMediaFile(1);
+                    picUri = Uri.fromFile(file); // create
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT,picUri); // set the image file
 
-        File sourceFile = new File(oldFile.getParent(), imageid + "."+fileExt);
-        oldFile.renameTo(sourceFile);
-
-        String fileName = sourceFile.getName();
-
-        System.out.println("Filename" + fileName + "-----" + sourceFileUri);
-
-        try {
-
-            // open a URL connection to the Servlet
-            FileInputStream fileInputStream = new FileInputStream(
-                    sourceFile);
-            URL url = new URL("http://mogwliisjunglee.96.lt/noticeapi.php");
-
-            // Open a HTTP connection to the URL
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setDoInput(true); // Allow Inputs
-            conn.setDoOutput(true); // Allow Outputs
-            conn.setUseCaches(false); // Don't use a Cached Copy
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Connection", "Keep-Alive");
-            conn.setRequestProperty("ENCTYPE", "multipart/form-data");
-            conn.setRequestProperty("Content-Type",
-                    "multipart/form-data;boundary=" + boundary);
-            conn.setRequestProperty("uploaded_file", fileName);
-            conn.setRequestProperty("action", action);
-
-            dos = new DataOutputStream(conn.getOutputStream());
-            dos.writeBytes(twoHyphens + boundary + lineEnd);
-            dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-                    + fileName + "\"" + lineEnd);
-            dos.writeBytes(lineEnd);
-
-            // create a buffer of maximum size
-            bytesAvailable = fileInputStream.available();
-
-            bufferSize = Math.min(bytesAvailable, maxBufferSize);
-            buffer = new byte[bufferSize];
-
-            // read file and write it into form...
-            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-            while (bytesRead > 0) {
-
-                dos.write(buffer, 0, bufferSize);
-                bytesAvailable = fileInputStream.available();
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
+                    startActivityForResult(intent, REQUEST_CAMERA);
+                } else if (items[item].equals("Choose from Library")) {
+                    Intent intent = new Intent(
+                            Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    startActivityForResult(
+                            Intent.createChooser(intent, "Select File"),
+                            PICK_IMAGE_REQUEST);
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
             }
-
-            // send multipart form data necesssary after file data...
-            dos.writeBytes(lineEnd);
-            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-            // Responses from the server (code and message)
-            int serverResponseCode = conn.getResponseCode();
-            String serverResponseMessage = conn.getResponseMessage();
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-            String inputLine;
-            StringBuffer responsebuffer = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                responsebuffer.append(inputLine);
-            }
-
-            // print result
-            String resStr = responsebuffer.toString();
-
-            in.close();
-
-            // close the streams //
-            fileInputStream.close();
-            dos.flush();
-            dos.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        });
+        builder.show();
     }
 
-    public static String getFileType(String url)
-    {
-        String type = null;
-        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-        if (extension != null) {
-            MimeTypeMap mime = MimeTypeMap.getSingleton();
-            type = mime.getMimeTypeFromExtension(extension);
+    /** Create a File for saving an image */
+    private  File getOutputMediaFile(int type){
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "MyApplication");
+
+        /**Create the storage directory if it does not exist*/
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                return null;
+            }
         }
-        return type;
+
+        /**Create a media file name*/
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == 1){
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "IMG_"+ timeStamp + ".jpeg");
+        } else {
+            return null;
+        }
+
+        return mediaFile;
     }
+
+
+
+
+
+
+
 }
