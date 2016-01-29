@@ -127,21 +127,22 @@ public class UploadClassifieds extends AppCompatActivity implements View.OnClick
                     e.printStackTrace();
                 }
             }
-            else if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK) {
+            else if(resultCode != RESULT_CANCELED){
+             if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK) {
 
-                Uri uri=picUri;
+                    Uri uri = picUri;
 
-                selectedImagePath[0] = ImageFilePath.getPath(getApplicationContext(), uri);
-                System.out.println("File Path " + selectedImagePath);
+                    selectedImagePath[0] = ImageFilePath.getPath(getApplicationContext(), uri);
+                    System.out.println("File Path " + selectedImagePath);
 
 
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                    i1.setImageBitmap(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        i1.setImageBitmap(bitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-
 
             }
             if (requestCode == PICK_IMAGE_REQUEST2)
@@ -156,9 +157,10 @@ public class UploadClassifieds extends AppCompatActivity implements View.OnClick
                     e.printStackTrace();
                 }
             }
-            else if (requestCode == REQUEST_CAMERA2 && resultCode == RESULT_OK) {
+            else if(resultCode != RESULT_CANCELED){
+            if (requestCode == REQUEST_CAMERA2 && resultCode == RESULT_OK) {
 
-                Uri uri=picUri;
+                Uri uri = picUri;
 
                 selectedImagePath[1] = ImageFilePath.getPath(getApplicationContext(), uri);
                 System.out.println("File Path " + selectedImagePath);
@@ -170,7 +172,7 @@ public class UploadClassifieds extends AppCompatActivity implements View.OnClick
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
+            }
 
             }
             if (requestCode == PICK_IMAGE_REQUEST3)
@@ -186,22 +188,23 @@ public class UploadClassifieds extends AppCompatActivity implements View.OnClick
                 }
             }
 
-            else if (requestCode == REQUEST_CAMERA3 && resultCode == RESULT_OK) {
+            else if(resultCode != RESULT_CANCELED){
+             if (requestCode == REQUEST_CAMERA3 && resultCode == RESULT_OK) {
 
-                Uri uri=picUri;
+                 Uri uri = picUri;
 
-                selectedImagePath[2] = ImageFilePath.getPath(getApplicationContext(), uri);
-                System.out.println("File Path " + selectedImagePath);
-
-
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                    i3.setImageBitmap(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                 selectedImagePath[2] = ImageFilePath.getPath(getApplicationContext(), uri);
+                 System.out.println("File Path " + selectedImagePath);
 
 
+                 try {
+                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                     i3.setImageBitmap(bitmap);
+                 } catch (IOException e) {
+                     e.printStackTrace();
+                 }
+
+             }
             }
             System.out.println("Selected File paths : " + selectedImagePath[0] + selectedImagePath[1] + selectedImagePath[2]);
         }

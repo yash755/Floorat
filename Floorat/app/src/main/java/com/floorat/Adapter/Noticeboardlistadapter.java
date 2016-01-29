@@ -32,18 +32,12 @@ public class Noticeboardlistadapter extends BaseAdapter implements Filterable {
     public boolean isImageFitToScreen;
     ImageView image;
 
-    public Noticeboardlistadapter(Context context, ArrayList<Noticelist> nlist) {
-        this.mOriginalValues = nlist;
-        this.mDisplayedValues = nlist;
-        ctx = context;
-        inflater = LayoutInflater.from(context);
-    }
-
     public Noticeboardlistadapter(Activity a,ArrayList<Noticelist> nlist ) {
         activity = a;
         this.mOriginalValues = nlist;
         this.mDisplayedValues = nlist;
         inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+       // imageLoader.clearCache();
         imageLoader=new ImageLoader(activity.getApplicationContext());
     }
 

@@ -1,6 +1,9 @@
 package com.floorat.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,41 +13,52 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.floorat.ImageUtils.ImageLoader;
 import com.floorat.R;
+
+import java.util.ArrayList;
 
 public class ClassifiedsAdapter extends ArrayAdapter<String> {
 
-    public ClassifiedsAdapter(Context context, String[] foods) {
-        super(context, R.layout.classifieds_rowview, foods);
+    ArrayList<String> head = new ArrayList<>();
+    ArrayList<String> urls = new ArrayList<>();
+    ArrayList<String> spes = new ArrayList<>();
+
+    ImageLoader imageLoader;
+    Activity    activity;
+
+    public ClassifiedsAdapter(Context context, ArrayList<String> heading, ArrayList<String> url, ArrayList<String> specs)
+    {
+        super(context, R.layout.classifieds_rowview,heading);
+        head = heading;
+        urls = url;
+        spes = specs;
+
+        imageLoader=new ImageLoader(context);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater myinflater = LayoutInflater.from(getContext());
-        View customView = myinflater.inflate(R.layout.classifieds_rowview, parent, false);
-        String[] medtext = {"Specs" , "Specs" , "Specs" , "Specs" , "Specs" , "Specs" , "Specs" , "Specs"};
-        int[] imgs = {R.drawable.nic , R.drawable.nic , R.drawable.nic , R.drawable.nic , R.drawable.nic , R.drawable.nic , R.drawable.nic , R.drawable.nic };
-        int[] back = {Color.parseColor("#00A2A6") , Color.parseColor("#FA005B") , Color.parseColor("#8FCC3A") , Color.parseColor("#FFB000") , Color.parseColor("#6F194F") , Color.parseColor("#00A2A6") , Color.parseColor("#FA005B") , Color.parseColor("#8FCC3A")};
+    public View getView(final int position, View convertView, ViewGroup parent) {
+
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View customView = inflater.inflate(R.layout.classifieds_rowview, parent, false);
+
+        TextView hd   = (TextView)customView.findViewById(R.id.heading_classfied);
+        TextView sp   = (TextView)customView.findViewById(R.id.textView3);
+        ImageView url = (ImageView)customView.findViewById(R.id.image_classfied);
+
+        hd.setText(head.get(position));
+        sp.setText(spes.get(position));
+
+
+        imageLoader.DisplayImage(urls.get(position),url);
 
 
 
-        String singleFoodItem = getItem(position);
-        String singleItem = medtext[position];
-        int singleImage = imgs[position];
-        int bck = back[position];
 
-
-        TextView lt = (TextView)customView.findViewById(R.id.textView2);
-        TextView mt = (TextView)customView.findViewById(R.id.textView3);
-        ImageView img = (ImageView)customView.findViewById(R.id.imageView3);
-        LinearLayout rs = (LinearLayout) customView.findViewById(R.id.rightside);
-
-        int c = Color.parseColor("#00A2A6");
-        lt.setText(singleFoodItem);
-        mt.setText(singleItem);
-        img.setImageResource(singleImage);
-        rs.setBackgroundColor(bck);
         return customView;
     }
+
+
 }
 

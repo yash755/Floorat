@@ -124,6 +124,8 @@ public class Login extends AppCompatActivity{
 
                 if (AccessToken.getCurrentAccessToken() != null) {
 
+                    login.setVisibility(LoginButton.GONE);
+
                     GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
 
 
@@ -212,6 +214,7 @@ public class Login extends AppCompatActivity{
                                     } else {
                                         FacebookSdk.sdkInitialize(getApplicationContext());
                                         LoginManager.getInstance().logOut();
+                                        login.setVisibility(LoginButton.VISIBLE);
                                         System.out.println("Flag Value" + flag);
                                         new Util().showerrormessage(Login.this, "Sorry but you must be female with minimum 50 friends");
                                     }

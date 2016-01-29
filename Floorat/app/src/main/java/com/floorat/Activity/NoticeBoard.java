@@ -27,6 +27,7 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.floorat.ImageUtils.ImageLoader;
 import com.floorat.RequestHandler.CustomRequest;
 import com.floorat.Adapter.Noticeboardlistadapter;
 import com.floorat.Objects.Noticelist;
@@ -46,6 +47,8 @@ public class NoticeBoard extends AppCompatActivity {
 
     private ArrayList<Noticelist> nlist = new ArrayList<>();
     private Noticeboardlistadapter adapter1;
+    ListView li;
+
 
 
     @Override
@@ -54,8 +57,6 @@ public class NoticeBoard extends AppCompatActivity {
         setContentView(R.layout.activity_notice_board);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -167,7 +168,7 @@ public class NoticeBoard extends AppCompatActivity {
             } catch (JSONException e) {
             }
         }
-        ListView li = (ListView) findViewById(R.id.notices);
+        li = (ListView) findViewById(R.id.notices);
         adapter1 = new Noticeboardlistadapter(NoticeBoard.this,nlist);
         li.setAdapter(adapter1);
     }

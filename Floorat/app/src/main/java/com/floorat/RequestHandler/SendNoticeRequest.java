@@ -113,7 +113,7 @@ public class SendNoticeRequest {
                     dos.writeBytes(lineEnd);
 
                     // assign value
-                    dos.writeBytes("send_notice");
+                    dos.writeBytes(head);
                     dos.writeBytes(lineEnd);
                     dos.writeBytes(twoHyphens + boundary + lineEnd);
 
@@ -124,7 +124,7 @@ public class SendNoticeRequest {
                     dos.writeBytes(lineEnd);
 
                     // assign value
-                    dos.writeBytes(head);
+                    dos.writeBytes("send_notice");
                     dos.writeBytes(lineEnd);
                     dos.writeBytes(twoHyphens + boundary + lineEnd);
 
