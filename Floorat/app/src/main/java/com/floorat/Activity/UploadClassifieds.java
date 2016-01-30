@@ -7,11 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,13 +19,11 @@ import android.widget.Toast;
 import com.floorat.ImageUtils.ImageFilePath;
 import com.floorat.R;
 import com.floorat.RequestHandler.SendAd;
-import com.floorat.RequestHandler.SendNoticeRequest;
 import com.floorat.SharedPrefrences.UserLocalStore;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class UploadClassifieds extends AppCompatActivity implements View.OnClickListener {
@@ -43,13 +38,16 @@ public class UploadClassifieds extends AppCompatActivity implements View.OnClick
     private int PICK_IMAGE_REQUEST2=2;
     private int PICK_IMAGE_REQUEST3=3;
 
-    private int REQUEST_CAMERA     =4;
+    private int REQUEST_CAMERA      =4;
     private int REQUEST_CAMERA2     =5;
     private int REQUEST_CAMERA3     =6;
 
     Bitmap bitmap;
 
-    Uri picUri;
+
+    Uri picUri = null;
+    Uri picUri1= null ;
+    Uri picUri2= null;
 
     String[] selectedImagePath = new String[3];
 
@@ -87,127 +85,12 @@ public class UploadClassifieds extends AppCompatActivity implements View.OnClick
         buttonChoose2.setOnClickListener(this);
         buttonChoose3.setOnClickListener(this);
 
+        buttonChoose2.setVisibility(View.GONE);
+        buttonChoose3.setVisibility(View.GONE);
+
         upload.setOnClickListener(this);
 
 
-    }
-
-
-    private void showFileChoosen(int req_code) {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"),req_code);
-
-    }
-
-    private void selectpicture(int req_code){
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        File file = getOutputMediaFile(1);
-        picUri = Uri.fromFile(file); // create
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, picUri); // set the image file
-
-        startActivityForResult(intent, req_code);
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (resultCode == RESULT_OK) {
-
-            if (requestCode == PICK_IMAGE_REQUEST)
-            {
-                Uri selectedImageUri = data.getData();
-                selectedImagePath[0] = ImageFilePath.getPath(getApplicationContext(), selectedImageUri);
-
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
-                    i1.setImageBitmap(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            else if(resultCode != RESULT_CANCELED){
-             if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK) {
-
-                    Uri uri = picUri;
-
-                    selectedImagePath[0] = ImageFilePath.getPath(getApplicationContext(), uri);
-                    System.out.println("File Path " + selectedImagePath);
-
-
-                    try {
-                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                        i1.setImageBitmap(bitmap);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-            if (requestCode == PICK_IMAGE_REQUEST2)
-            {
-                Uri selectedImageUri = data.getData();
-                selectedImagePath[1] = ImageFilePath.getPath(getApplicationContext(), selectedImageUri);
-
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
-                    i2.setImageBitmap(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            else if(resultCode != RESULT_CANCELED){
-            if (requestCode == REQUEST_CAMERA2 && resultCode == RESULT_OK) {
-
-                Uri uri = picUri;
-
-                selectedImagePath[1] = ImageFilePath.getPath(getApplicationContext(), uri);
-                System.out.println("File Path " + selectedImagePath);
-
-
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                    i2.setImageBitmap(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            }
-            if (requestCode == PICK_IMAGE_REQUEST3)
-            {
-                Uri selectedImageUri = data.getData();
-                selectedImagePath[2] = ImageFilePath.getPath(getApplicationContext(), selectedImageUri);
-
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
-                    i3.setImageBitmap(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            else if(resultCode != RESULT_CANCELED){
-             if (requestCode == REQUEST_CAMERA3 && resultCode == RESULT_OK) {
-
-                 Uri uri = picUri;
-
-                 selectedImagePath[2] = ImageFilePath.getPath(getApplicationContext(), uri);
-                 System.out.println("File Path " + selectedImagePath);
-
-
-                 try {
-                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                     i3.setImageBitmap(bitmap);
-                 } catch (IOException e) {
-                     e.printStackTrace();
-                 }
-
-             }
-            }
-            System.out.println("Selected File paths : " + selectedImagePath[0] + selectedImagePath[1] + selectedImagePath[2]);
-        }
     }
 
 
@@ -222,9 +105,21 @@ public class UploadClassifieds extends AppCompatActivity implements View.OnClick
                 @Override
                 public void onClick(DialogInterface dialog, int item) {
                     if (items[item].equals("Take Photo")) {
-                        selectpicture(REQUEST_CAMERA);
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                        File file = getOutputMediaFile(1);
+                        picUri = Uri.fromFile(file); // create
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, picUri); // set the image file
+
+                        startActivityForResult(intent, REQUEST_CAMERA);
                     } else if (items[item].equals("Choose from Library")) {
-                        showFileChoosen(PICK_IMAGE_REQUEST);
+                        Intent intent = new Intent(
+                                Intent.ACTION_PICK,
+                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        intent.setType("image/*");
+                        startActivityForResult(
+                                Intent.createChooser(intent, "Select File"),
+                                PICK_IMAGE_REQUEST);
                     } else if (items[item].equals("Cancel")) {
                         dialog.dismiss();
                     }
@@ -232,41 +127,9 @@ public class UploadClassifieds extends AppCompatActivity implements View.OnClick
             });
             builder.show();
 
-        } else if (v == buttonChoose2) {
-            final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
-            AlertDialog.Builder builder = new AlertDialog.Builder(UploadClassifieds.this);
-            builder.setTitle("Add Photo!");
-            builder.setItems(items, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int item) {
-                    if (items[item].equals("Take Photo")) {
-                        selectpicture(REQUEST_CAMERA2);
-                    } else if (items[item].equals("Choose from Library")) {
-                        showFileChoosen(PICK_IMAGE_REQUEST2);
-                    } else if (items[item].equals("Cancel")) {
-                        dialog.dismiss();
-                    }
-                }
-            });
-            builder.show();
-
-        } else if (v == buttonChoose3) {
-            final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
-            AlertDialog.Builder builder = new AlertDialog.Builder(UploadClassifieds.this);
-            builder.setTitle("Add Photo!");
-            builder.setItems(items, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int item) {
-                    if (items[item].equals("Take Photo")) {
-                        selectpicture(REQUEST_CAMERA3);
-                    } else if (items[item].equals("Choose from Library")) {
-                        showFileChoosen(PICK_IMAGE_REQUEST3);
-                    } else if (items[item].equals("Cancel")) {
-                        dialog.dismiss();
-                    }
-                }
-            });
-            builder.show();
+            buttonChoose1.setVisibility(View.GONE);
+            buttonChoose2.setVisibility(View.VISIBLE);
+            buttonChoose3.setVisibility(View.GONE);
 
         }
         else if (v == upload){
@@ -278,9 +141,9 @@ public class UploadClassifieds extends AppCompatActivity implements View.OnClick
                 String aptname = userLocalStore.getdata();
 
                 if(selectedImagePath[0] != null)
-              sendad(selectedImagePath[0],aptname,title.getText().toString(),description.getText().toString(),
-                      contact.getText().toString(),price.getText().toString(),
-                      sp1.getSelectedItem().toString());
+                    sendad(selectedImagePath[0],aptname,title.getText().toString(),description.getText().toString(),
+                            contact.getText().toString(),price.getText().toString(),
+                            sp1.getSelectedItem().toString());
                 if(selectedImagePath[1] != null)
                     sendad(selectedImagePath[1],aptname,title.getText().toString(),description.getText().toString(),
                             contact.getText().toString(),price.getText().toString(),
@@ -315,6 +178,7 @@ public class UploadClassifieds extends AppCompatActivity implements View.OnClick
 
     }
 
+    /** Create a File for saving an image */
     private  File getOutputMediaFile(int type){
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), "MyApplication");
@@ -338,4 +202,49 @@ public class UploadClassifieds extends AppCompatActivity implements View.OnClick
 
         return mediaFile;
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            Uri uri = picUri;
+
+            selectedImagePath[0] = ImageFilePath.getPath(getApplicationContext(), uri);
+            System.out.println("File Path " + selectedImagePath);
+
+
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                i1.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        } else if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+
+            Uri selectedImageUri = data.getData();
+
+            //MEDIA GALLERY
+            selectedImagePath[0] = ImageFilePath.getPath(getApplicationContext(), selectedImageUri);
+            System.out.println("File Path " + selectedImagePath);
+
+
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
+                i1.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
+
 }

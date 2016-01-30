@@ -26,6 +26,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.floorat.Adapter.ClassifiedsAdapter;
+import com.floorat.ImageUtils.ImageLoader;
 import com.floorat.R;
 import com.floorat.RequestHandler.CustomRequest;
 import com.floorat.SharedPrefrences.UserLocalStore;
@@ -42,6 +43,7 @@ import java.util.Map;
 public class Classifieds extends AppCompatActivity {
 
     String category;
+    ImageLoader imageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,10 +128,11 @@ public class Classifieds extends AppCompatActivity {
     void showbuysell(JSONArray response) {
         System.out.println("Response is" + response.toString());
 
-        ArrayList<String> heading = new ArrayList<>();
-        ArrayList<String> url   = new ArrayList<>();
-        ArrayList<String> specs = new ArrayList<>();
-        ArrayList<String> id    = new ArrayList<>();
+        final ArrayList<String> heading = new ArrayList<>();
+        final ArrayList<String> url     = new ArrayList<>();
+        final ArrayList<String> specs   = new ArrayList<>();
+        final ArrayList<String> idss    = new ArrayList<>();
+        final ArrayList<String> icount  = new ArrayList<>();
 
         if(response.length() != 0) {
             for (int i = 0; i < response.length(); i++) {
@@ -138,12 +141,14 @@ public class Classifieds extends AppCompatActivity {
                     String head = json.getString("title");
                     String urls = json.getString("image");
                     String spec = json.getString("description");
-                    String ids = json.getString("id");
+                    String ids  = json.getString("id");
+                    String icou = json.getString("count");
 
                     heading.add(head);
                     url.add(urls);
                     specs.add(spec);
-                    id.add(ids);
+                    idss.add(ids);
+                    icount.add(icou);
 
                 } catch (JSONException e) {
                 }
@@ -161,7 +166,8 @@ public class Classifieds extends AppCompatActivity {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             String name = String.valueOf(parent.getItemAtPosition(position));
                             Intent intent = new Intent(getBaseContext(), ViewClassified.class);
-                            intent.putExtra("ans", name);
+                            intent.putExtra("id", idss.get(position));
+                            intent.putExtra("count",icount.get(position));
                             startActivity(intent);
                         }
                     }
@@ -171,10 +177,6 @@ public class Classifieds extends AppCompatActivity {
             new Util().showerrormessage(Classifieds.this, "Sorry no notice as per now!!");
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        fetchbuysell();
-    }
+
 
 }

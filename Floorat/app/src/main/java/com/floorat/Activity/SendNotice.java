@@ -83,13 +83,7 @@ public class SendNotice extends AppCompatActivity  implements View.OnClickListen
         buttonUpload.setOnClickListener(this);
     }
 
-    private void showFileChoosen() {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
 
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

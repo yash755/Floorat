@@ -196,14 +196,14 @@ public class SendNoticeRequest {
 
                     progressDialog.dismiss();
                     ex.printStackTrace();
-                    return  "[MalformedURLException Exception]";
+                    return  "MalformedURLException Exception";
 
 
                 } catch (Exception e) {
 
                     progressDialog.dismiss();
                     e.printStackTrace();
-                    return "[Time Out try later !!!]";
+                    return "Time Out try later !!!";
 
                 }
 
@@ -221,6 +221,7 @@ public class SendNoticeRequest {
         protected void onPostExecute(String response) {
 
             progressDialog.dismiss();
+            System.out.println("Response" + response);
             Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
 
             super.onPostExecute(null);
