@@ -34,5 +34,8 @@
     </string-array>
     <string name="title_activity_classifieds">Classifieds</string>
     <string name="title_activity_view_classified">ViewClassified</string>
+    <string name="title_activity_classified_comment">ClassifiedComment</string>
+    <string name="title_activity_classified_ask_question">ClassifiedAskQuestion</string>
+    <string name="title_activity_view_notification">ViewNotification</string>
 
 </resources>

@@ -1,18 +1,28 @@
 package com.floorat.Activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -26,6 +36,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.floorat.Adapter.ClassifiedsAdapter;
+import com.floorat.Adapter.CommentsAdapter;
 import com.floorat.ImageUtils.ImageLoader;
 import com.floorat.R;
 import com.floorat.RequestHandler.CustomRequest;
@@ -40,50 +51,58 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Classifieds extends AppCompatActivity {
+public class ClassifiedAskQuestion extends AppCompatActivity {
 
-    String category;
     ImageLoader imageLoader;
-
+    UserLocalStore userlocalstore;
+    EditText editText;
+    String ids;
+    String pid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_classifieds);
+        setContentView(R.layout.activity_classified_ask_question);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Bundle extras = getIntent().getExtras();
-        category = extras.getString("cat");
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        Bundle extras = getIntent().getExtras();
+        ids = extras.getString("bs_id");
+
+        imageLoader = new ImageLoader(ClassifiedAskQuestion.this);
+
+        ImageView imageView = (ImageView) findViewById(R.id.imageView4);
+        editText = (EditText) findViewById(R.id.editText);
+        Button button = (Button) findViewById(R.id.button3);
+
+        userlocalstore = new UserLocalStore(this);
+        imageLoader.DisplayImage(userlocalstore.geturl(), imageView);
+
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Classifieds.this, UploadClassifieds.class);
-                intent.putExtra("cat", category);
-                startActivity(intent);
+            public void onClick(View v) {
+                insertComment();
+
             }
         });
-
-        fetchbuysell();
-
     }
 
-    void fetchbuysell()
-    {
+
+    void insertComment() {
         final ProgressDialog pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Fetching Building List...");
+        pDialog.setMessage("Saving Data...");
         pDialog.show();
-        UserLocalStore userLocalStore;
-        userLocalStore = new UserLocalStore(this);
+
+        String apt = userlocalstore.getdata();
+        String name = userlocalstore.getname();
+        String comment = editText.getText().toString();
 
         String url = "http://mogwliisjunglee.96.lt/classifiedapi.php";
         Map<String, String> params = new HashMap<String, String>();
-        params.put("action", "get_buy_sell_ads");
-        params.put("building_name", userLocalStore.getdata());
-        params.put("category_name",category);
-
-        System.out.println("Response" + params.toString());
+        params.put("action", "insert_buy_sell_ques");
+        params.put("bs_id", ids);
+        params.put("user_name", name);
+        params.put("comment", comment);
 
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, params, new Response.Listener<JSONArray>() {
 
@@ -91,7 +110,7 @@ public class Classifieds extends AppCompatActivity {
             public void onResponse(JSONArray response) {
                 Log.d("Response: ", response.toString());
                 pDialog.hide();
-                showbuysell(response);
+                fetchresult(response);
             }
         }, new Response.ErrorListener() {
 
@@ -100,24 +119,19 @@ public class Classifieds extends AppCompatActivity {
                 if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                     pDialog.hide();
                     Toast.makeText(getApplicationContext(), "Time Out Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), Home.class));
                 } else if (error instanceof AuthFailureError) {
                     pDialog.hide();
                     Toast.makeText(getApplicationContext(), "Authentication Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), Home.class));
                 } else if (error instanceof ServerError) {
                     pDialog.hide();
                     Toast.makeText(getApplicationContext(), "Server Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), Home.class));
                 } else if (error instanceof NetworkError) {
                     pDialog.hide();
                     Toast.makeText(getApplicationContext(), "Network Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), Home.class));
                 } else if (error instanceof ParseError) {
                     pDialog.hide();
                     Log.d("Response: ", error.toString());
                     Toast.makeText(getApplicationContext(), "Unknown Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), Home.class));
                 }
             }
         });
@@ -125,55 +139,20 @@ public class Classifieds extends AppCompatActivity {
         queue.add(jsObjRequest);
     }
 
-    void showbuysell(JSONArray response) {
-        System.out.println("Response is" + response.toString());
+    void fetchresult(JSONArray response) {
 
-        final ArrayList<String> heading = new ArrayList<>();
-        final ArrayList<String> url     = new ArrayList<>();
-        final ArrayList<String> specs   = new ArrayList<>();
-        final ArrayList<String> idss    = new ArrayList<>();
-        final ArrayList<String> icount  = new ArrayList<>();
+        System.out.println("Response is this check " + response.toString());
 
-        if(response.length() != 0) {
+        if (response.length() != 0) {
             for (int i = 0; i < response.length(); i++) {
                 try {
+
                     JSONObject json = response.getJSONObject(i);
-                    String head = json.getString("title");
-                    String urls = json.getString("image");
-                    String spec = json.getString("description");
-                    String ids  = json.getString("id");
-                    String icou = json.getString("count");
-
-                    heading.add(head);
-                    url.add(urls);
-                    specs.add(spec);
-                    idss.add(ids);
-                    icount.add(icou);
-
-                } catch (JSONException e) {
+                    pid = json.getString("parent_id");
+                }
+                catch (JSONException e) {
                 }
             }
-
-
-            ListAdapter adpt = new ClassifiedsAdapter(this, heading, url, specs);
-            ListView list = (ListView) findViewById(R.id.listView2);
-            list.setAdapter(adpt);
-
-
-            list.setOnItemClickListener(
-                    new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            String name = String.valueOf(parent.getItemAtPosition(position));
-                            Intent intent = new Intent(getBaseContext(), ViewClassified.class);
-                            intent.putExtra("id", idss.get(position));
-                            intent.putExtra("count",icount.get(position));
-                            startActivity(intent);
-                        }
-                    }
-            );
         }
-        else
-            new Util().showerrormessage(Classifieds.this, "Sorry no notice as per now!!");
     }
 }

@@ -83,4 +83,13 @@
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
 
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
+        android:text="Add / View Comments"
+        android:id="@+id/button2"
+        android:layout_below="@+id/condition"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="false" />
+
 </RelativeLayout>

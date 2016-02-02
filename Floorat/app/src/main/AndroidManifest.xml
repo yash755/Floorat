@@ -113,6 +113,21 @@
             android:label="@string/title_activity_view_classified"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".Activity.ClassifiedComment"
+            android:label="@string/title_activity_classified_comment"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".Activity.ClassifiedAskQuestion"
+            android:label="@string/title_activity_classified_ask_question"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".Activity.ViewNotification"
+            android:label="@string/title_activity_view_notification"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>

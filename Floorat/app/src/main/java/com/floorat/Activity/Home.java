@@ -1,9 +1,14 @@
 package com.floorat.Activity;
 
 import android.app.ActivityOptions;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +16,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.transition.Explode;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,15 +27,42 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.floorat.Adapter.CommentsAdapter;
 import com.floorat.ImageUtils.DownloadImageTask;
 import com.floorat.R;
 import com.floorat.Adapter.SlidingTabLayout;
+import com.floorat.RequestHandler.CustomRequest;
 import com.floorat.SharedPrefrences.UserLocalStore;
 import com.floorat.Utils.Util;
 import com.floorat.Adapter.ViewPagerAdapter;
+import com.floorat.Utils2;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -40,8 +73,6 @@ public class Home extends AppCompatActivity
     CharSequence Titles[]={"My Groups","Apartment Groups"};
     int Numboftabs =2;
     UserLocalStore userLocalStore;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +120,7 @@ public class Home extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        fetchnotificationcount();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -97,7 +129,7 @@ public class Home extends AppCompatActivity
         System.out.println("Url : "+url);
 //        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
-        ImageView image=(ImageView)navigationView.findViewById(R.id.id_is);
+         ImageView image=(ImageView)navigationView.findViewById(R.id.id_is);
          new DownloadImageTask(image).execute(url);
     }
 
@@ -114,17 +146,22 @@ public class Home extends AppCompatActivity
             super.onBackPressed();
         }
     }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
 
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
+
+        MenuItem item = menu.findItem(R.id.notification_id);
+/*        LayerDrawable icon = (LayerDrawable) item.getIcon();
+
+        Utils2.setBadgeCount(this, icon, 2);
+*/
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -145,12 +182,14 @@ public class Home extends AppCompatActivity
     }
 
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.notification_id) {
-            Toast.makeText(getApplicationContext(), "No Notification", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Home.this, ViewNotification.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -226,4 +265,83 @@ public class Home extends AppCompatActivity
         Intent i = new Intent(Home.this, Profile.class);
         startActivity(i);
     }
+
+
+
+
+
+    void fetchnotificationcount()
+    {
+        final ProgressDialog pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Fetching Notifications...");
+        pDialog.show();
+
+        String url = "http://mogwliisjunglee.96.lt/notificationapi.php";
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("action", "get_notifications");
+        params.put("name", userLocalStore.getname());
+
+        System.out.println("Sent arguments name " + userLocalStore.getname());
+
+        System.out.println("Response" + params.toString());
+
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, params, new Response.Listener<JSONArray>() {
+
+            @Override
+            public void onResponse(JSONArray response) {
+                Log.d("Response: ", response.toString());
+                pDialog.hide();
+                countNotification(response);
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Time Out Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), Home.class));
+                } else if (error instanceof AuthFailureError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Authentication Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), Home.class));
+                } else if (error instanceof ServerError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Server Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), Home.class));
+                } else if (error instanceof NetworkError) {
+                    pDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Network Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), Home.class));
+                } else if (error instanceof ParseError) {
+                    pDialog.hide();
+                    Log.d("Response: ", error.toString());
+                    Toast.makeText(getApplicationContext(), "Unknown Error.....Try Later!!!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), Home.class));
+                }
+            }
+        });
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(jsObjRequest);
+    }
+
+    void countNotification(JSONArray response) {
+        System.out.println("Response is" + response.toString());
+
+        if (response.length() != 0) {
+            for (int i = 0; i < response.length(); i++) {
+                try {
+                    JSONObject json = response.getJSONObject(i);
+                    String ct = json.getString("count");
+                    Toast.makeText(Home.this, "count "+ct, Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                }
+            }
+        }
+    }
+
+
+
+
+
 }

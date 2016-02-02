@@ -50,7 +50,7 @@ public class ClassifiedsAdapter extends ArrayAdapter<String> {
         hd.setText(head.get(position));
         sp.setText(spes.get(position));
 
-
+System.out.println("Classified adapter ki first argument "+urls.get(position));
         imageLoader.DisplayImage(urls.get(position),url);
 
 

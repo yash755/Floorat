@@ -7,6 +7,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +47,7 @@ public class ViewClassified extends AppCompatActivity {
     CharSequence Titles[]={"Sample 1","Sample 2","Sample 3"};
 
     TextView title,description,contact,price,condition;
+    Button button2 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +68,15 @@ public class ViewClassified extends AppCompatActivity {
         price = (TextView)findViewById(R.id.price);
         condition = (TextView)findViewById(R.id.condition);
 
-
-
+        button2 = (Button)findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewClassified.this, ClassifiedComment.class);
+                intent.putExtra("id", ids);
+                startActivity(intent);
+            }
+        });
 
 
         fetchbuysell();
@@ -260,7 +270,3 @@ public class ViewClassified extends AppCompatActivity {
 
 
 }
-
-
-
-

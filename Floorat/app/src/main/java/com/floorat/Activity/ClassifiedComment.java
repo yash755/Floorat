@@ -4,15 +4,18 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -25,7 +28,11 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.floorat.Adapter.BuySelllistadapter;
+import com.floorat.Adapter.ClassifiedAdapter;
 import com.floorat.Adapter.ClassifiedsAdapter;
+import com.floorat.Adapter.CommentsAdapter;
+import com.floorat.Adapter.SlidingTabLayout;
 import com.floorat.ImageUtils.ImageLoader;
 import com.floorat.R;
 import com.floorat.RequestHandler.CustomRequest;
@@ -40,48 +47,44 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Classifieds extends AppCompatActivity {
+public class ClassifiedComment extends AppCompatActivity {
 
-    String category;
-    ImageLoader imageLoader;
-
+    String ids;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_classifieds);
+        setContentView(R.layout.activity_classified_comment);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         Bundle extras = getIntent().getExtras();
-        category = extras.getString("cat");
+        ids = extras.getString("id");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Classifieds.this, UploadClassifieds.class);
-                intent.putExtra("cat", category);
+                Intent intent = new Intent(ClassifiedComment.this, ClassifiedAskQuestion.class);
+                intent.putExtra("bs_id", ids);
                 startActivity(intent);
             }
         });
 
-        fetchbuysell();
 
+
+        fetchcomments();
     }
 
-    void fetchbuysell()
+    void fetchcomments()
     {
         final ProgressDialog pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Fetching Building List...");
+        pDialog.setMessage("Fetching Comments...");
         pDialog.show();
-        UserLocalStore userLocalStore;
-        userLocalStore = new UserLocalStore(this);
 
         String url = "http://mogwliisjunglee.96.lt/classifiedapi.php";
         Map<String, String> params = new HashMap<String, String>();
-        params.put("action", "get_buy_sell_ads");
-        params.put("building_name", userLocalStore.getdata());
-        params.put("category_name",category);
+        params.put("action", "get_buy_sell_ads_comments");
+        params.put("bs_id", ids);
 
         System.out.println("Response" + params.toString());
 
@@ -91,7 +94,7 @@ public class Classifieds extends AppCompatActivity {
             public void onResponse(JSONArray response) {
                 Log.d("Response: ", response.toString());
                 pDialog.hide();
-                showbuysell(response);
+                showcomments(response);
             }
         }, new Response.ErrorListener() {
 
@@ -125,55 +128,58 @@ public class Classifieds extends AppCompatActivity {
         queue.add(jsObjRequest);
     }
 
-    void showbuysell(JSONArray response) {
+    void showcomments(JSONArray response) {
         System.out.println("Response is" + response.toString());
 
-        final ArrayList<String> heading = new ArrayList<>();
-        final ArrayList<String> url     = new ArrayList<>();
-        final ArrayList<String> specs   = new ArrayList<>();
-        final ArrayList<String> idss    = new ArrayList<>();
-        final ArrayList<String> icount  = new ArrayList<>();
+        final ArrayList<String> ques_list = new ArrayList<>();
+        final ArrayList<String> ans_list     = new ArrayList<>();
+        final ArrayList<String> name_list   = new ArrayList<>();
+        final ArrayList<String> pic_list    = new ArrayList<>();
+        final ArrayList<String> head_pic_list   = new ArrayList<>();
+        final ArrayList<String> head_name_list    = new ArrayList<>();
 
-        if(response.length() != 0) {
+        if (response.length() != 0) {
             for (int i = 0; i < response.length(); i++) {
                 try {
                     JSONObject json = response.getJSONObject(i);
-                    String head = json.getString("title");
-                    String urls = json.getString("image");
-                    String spec = json.getString("description");
-                    String ids  = json.getString("id");
-                    String icou = json.getString("count");
+                    String ques = json.getString("ques");
+                    String ans = json.getString("ans");
+                    String name = json.getString("name");
+                    String pic  = json.getString("pic");
+                    String head_pic = json.getString("head_pic");
+                    String head_name  = json.getString("head_name");
 
-                    heading.add(head);
-                    url.add(urls);
-                    specs.add(spec);
-                    idss.add(ids);
-                    icount.add(icou);
+                    ques_list.add(ques);
+                    ans_list.add(ans);
+                    name_list.add(name);
+                    pic_list.add(pic);
+                    head_pic_list.add(head_pic);
+                    head_name_list.add(head_name);
 
                 } catch (JSONException e) {
                 }
             }
 
 
-            ListAdapter adpt = new ClassifiedsAdapter(this, heading, url, specs);
-            ListView list = (ListView) findViewById(R.id.listView2);
+            ListAdapter adpt = new CommentsAdapter(this, ques_list, ans_list, name_list, pic_list, head_pic_list, head_name_list);
+            ListView list = (ListView) findViewById(R.id.listView3);
             list.setAdapter(adpt);
-
 
             list.setOnItemClickListener(
                     new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            String name = String.valueOf(parent.getItemAtPosition(position));
+ /*                           String name = String.valueOf(parent.getItemAtPosition(position));
                             Intent intent = new Intent(getBaseContext(), ViewClassified.class);
                             intent.putExtra("id", idss.get(position));
-                            intent.putExtra("count",icount.get(position));
-                            startActivity(intent);
+                            intent.putExtra("count", icount.get(position));
+                            startActivity(intent);*/
+                            Toast.makeText(ClassifiedComment.this, "Selected", Toast.LENGTH_SHORT).show();
                         }
                     }
             );
         }
         else
-            new Util().showerrormessage(Classifieds.this, "Sorry no notice as per now!!");
+            new Util().showerrormessage(ClassifiedComment.this, "Sorry no comments as per now!!");
     }
 }
