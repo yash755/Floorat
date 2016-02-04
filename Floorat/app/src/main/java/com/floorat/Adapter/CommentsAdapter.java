@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.floorat.Activity.ClassifiedComment;
 import com.floorat.ImageUtils.ImageLoader;
 import com.floorat.R;
 import com.floorat.RoundImage;
@@ -63,25 +64,19 @@ public class CommentsAdapter extends ArrayAdapter<String> {
         TextView ans_text = (TextView) customView.findViewById(R.id.ans_text);
         ImageView ques_img = (ImageView) customView.findViewById(R.id.ques_image);
         ImageView ans_img = (ImageView) customView.findViewById(R.id.ans_image);
-        editText = (EditText) customView.findViewById(R.id.ans_type);
 
 
         ques_name.setText(name_list.get(position));
         ques_text.setText(ques_list.get(position));
         ans_name.setText(head_name_list.get(position));
+        ans_text.setText(ans_list.get(position));
 
-        if (ques_list.get(position).equals(ans_list.get(position))) {
-            ans_text.setVisibility(View.GONE);
-            editText.setEnabled(true);
-            editText.setInputType(InputType.TYPE_CLASS_TEXT);
-            editText.setFocusable(true);
-        } else {
-            editText.setVisibility(View.GONE);
-            ans_text.setText(ans_list.get(position));
-        }
+
         System.out.println("url " + pic_list.get(position));
         imageLoader.DisplayImage(pic_list.get(position), ques_img);
         imageLoader.DisplayImage(head_pic_list.get(position), ans_img);
         return customView;
     }
+
+
 }

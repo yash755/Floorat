@@ -151,6 +151,68 @@ public class Login extends AppCompatActivity{
 
                                     userlocalstore.userData(name, gender, url, "null");
 
+                                    System.out.println("This is one");
+
+                                    new GraphRequest(
+                                            AccessToken.getCurrentAccessToken(),
+                                            "/me/friends",
+                                            null,
+                                            HttpMethod.GET,
+                                            new GraphRequest.Callback() {
+
+
+                                                public void onCompleted(GraphResponse response) {
+            /* handle the result */
+                                                    JSONObject json = response.getJSONObject();
+                                                    String friend_list;
+
+
+                                                    try {
+                                                        JSONObject js = json.getJSONObject("summary");
+                                                        friend_list = js.getString("total_count");
+                                                        //int result = friend_list.compareTo("50");
+
+                                                        int result = Integer.parseInt(friend_list);
+                                                        if (result > 50) {
+                                                            System.out.println("I am" + friend_list);
+                                                            flag++;
+                                                        }
+
+                                                        System.out.println("This is two");
+
+                                                    } catch (JSONException e) {
+                                                        System.out.println("Response was ");
+                                                        e.printStackTrace();
+                                                    }
+
+                                                    System.out.println("Flag value" + flag);
+
+                                                    if (flag == 2) {
+
+                                                        System.out.println("This is three");
+                                                        login.setVisibility(LoginButton.GONE);
+
+
+                                                        FacebookSdk.sdkInitialize(getApplicationContext());
+                                                        LoginManager.getInstance().logOut();
+
+                                                        userlocalstore.setApartment(true);
+
+                                                        Intent i = new Intent(getApplicationContext(), ApartmentsList.class);
+                                                        startActivity(i);
+
+                                                    } else {
+                                                        FacebookSdk.sdkInitialize(getApplicationContext());
+                                                        LoginManager.getInstance().logOut();
+                                                        login.setVisibility(LoginButton.VISIBLE);
+                                                        System.out.println("Flag Value" + flag);
+                                                        new Util().showerrormessage(Login.this, "Sorry but you must be female with minimum 50 friends");
+                                                    }
+                                                }
+                                            }
+                                    ).executeAsync();
+
+
                                 }
 
                             } catch (JSONException e) {
@@ -167,60 +229,6 @@ public class Login extends AppCompatActivity{
                     request.executeAsync();
 
 
-                    new GraphRequest(
-                            AccessToken.getCurrentAccessToken(),
-                            "/me/friends",
-                            null,
-                            HttpMethod.GET,
-                            new GraphRequest.Callback() {
-
-
-                                public void onCompleted(GraphResponse response) {
-            /* handle the result */
-                                    JSONObject json = response.getJSONObject();
-                                    String friend_list;
-
-
-                                    try {
-                                        JSONObject js = json.getJSONObject("summary");
-                                        friend_list = js.getString("total_count");
-                                        //int result = friend_list.compareTo("50");
-
-                                        int result = Integer.parseInt(friend_list);
-                                        if (result > 50) {
-                                            System.out.println("I am" + friend_list);
-                                            flag++;
-                                        }
-
-                                    } catch (JSONException e) {
-                                        System.out.println("Response was ");
-                                        e.printStackTrace();
-                                    }
-
-                                    System.out.println("Flag value" + flag);
-
-                                    if (flag == 2) {
-                                         login.setVisibility(LoginButton.GONE);
-
-
-                                         FacebookSdk.sdkInitialize(getApplicationContext());
-                                         LoginManager.getInstance().logOut();
-
-                                         userlocalstore.setApartment(true);
-
-                                        Intent i = new Intent(getApplicationContext(), ApartmentsList.class);
-                                        startActivity(i);
-
-                                    } else {
-                                        FacebookSdk.sdkInitialize(getApplicationContext());
-                                        LoginManager.getInstance().logOut();
-                                        login.setVisibility(LoginButton.VISIBLE);
-                                        System.out.println("Flag Value" + flag);
-                                        new Util().showerrormessage(Login.this, "Sorry but you must be female with minimum 50 friends");
-                                    }
-                                }
-                            }
-                    ).executeAsync();
 
 
                 }

@@ -1,17 +1,21 @@
 package com.floorat.Activity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -169,17 +173,42 @@ public class ClassifiedComment extends AppCompatActivity {
                     new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
- /*                           String name = String.valueOf(parent.getItemAtPosition(position));
-                            Intent intent = new Intent(getBaseContext(), ViewClassified.class);
-                            intent.putExtra("id", idss.get(position));
-                            intent.putExtra("count", icount.get(position));
-                            startActivity(intent);*/
-                            Toast.makeText(ClassifiedComment.this, "Selected", Toast.LENGTH_SHORT).show();
-                        }
+
+                            showInputDialog();
+
+                      }
                     }
             );
         }
         else
             new Util().showerrormessage(ClassifiedComment.this, "Sorry no comments as per now!!");
+    }
+
+    protected void showInputDialog() {
+
+        // get prompts.xml view
+        LayoutInflater layoutInflater = LayoutInflater.from(ClassifiedComment.this);
+        View promptView = layoutInflater.inflate(R.layout.classified_comment_input_dialog, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ClassifiedComment.this);
+        alertDialogBuilder.setView(promptView);
+
+        final EditText editText = (EditText) promptView.findViewById(R.id.edittext);
+        // setup a dialog window
+        alertDialogBuilder.setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                  //      resultText.setText("Hello, " + editText.getText());
+                    }
+                })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        // create an alert dialog
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
 }
