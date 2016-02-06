@@ -97,8 +97,15 @@ public class CommentsAdapter extends ArrayAdapter<String> {
                     alertDialogBuilder.setCancelable(false)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    String str = editText.getText().toString();
-                                    insertans(str, head_name_list.get(position), comment_id_list.get(position));
+                                    userLocalStore = new UserLocalStore(ctx);
+                                    if(head_name_list.get(position).equals(userLocalStore.getname())){
+                                        String str = editText.getText().toString();
+                                        insertans(str, head_name_list.get(position), comment_id_list.get(position));
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(ctx, "Sorry you are not authorised to answer this question", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             })
                             .setNegativeButton("Cancel",
@@ -143,9 +150,6 @@ public class CommentsAdapter extends ArrayAdapter<String> {
         params.put("user_name", userLocalStore.getname());
         params.put("comment", comment);
         params.put("parent", id);
-
-
-        $id, $user_name, $comment, $parent
 
 
         System.out.println("Inputs are bs_id " + ids + " user_name " + userLocalStore.getname() + " comment " + comment + " parent " + id);
