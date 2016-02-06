@@ -166,6 +166,7 @@ public class Classifieds extends AppCompatActivity {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             String name = String.valueOf(parent.getItemAtPosition(position));
                             Intent intent = new Intent(getBaseContext(), ViewClassified.class);
+                          //  Toast.makeText(Classifieds.this, idss.get(position), Toast.LENGTH_SHORT).show();
                             intent.putExtra("id", idss.get(position));
                             intent.putExtra("count",icount.get(position));
                             startActivity(intent);

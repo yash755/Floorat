@@ -1,24 +1,15 @@
 package com.floorat.Activity;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -32,15 +23,9 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.floorat.Adapter.BuySelllistadapter;
-import com.floorat.Adapter.ClassifiedAdapter;
-import com.floorat.Adapter.ClassifiedsAdapter;
 import com.floorat.Adapter.CommentsAdapter;
-import com.floorat.Adapter.SlidingTabLayout;
-import com.floorat.ImageUtils.ImageLoader;
 import com.floorat.R;
 import com.floorat.RequestHandler.CustomRequest;
-import com.floorat.SharedPrefrences.UserLocalStore;
 import com.floorat.Utils.Util;
 
 import org.json.JSONArray;
@@ -141,6 +126,7 @@ public class ClassifiedComment extends AppCompatActivity {
         final ArrayList<String> pic_list    = new ArrayList<>();
         final ArrayList<String> head_pic_list   = new ArrayList<>();
         final ArrayList<String> head_name_list    = new ArrayList<>();
+        final ArrayList<String> comment_id_list    = new ArrayList<>();
 
         if (response.length() != 0) {
             for (int i = 0; i < response.length(); i++) {
@@ -152,6 +138,7 @@ public class ClassifiedComment extends AppCompatActivity {
                     String pic  = json.getString("pic");
                     String head_pic = json.getString("head_pic");
                     String head_name  = json.getString("head_name");
+                    String comment_id  = json.getString("id");
 
                     ques_list.add(ques);
                     ans_list.add(ans);
@@ -159,56 +146,26 @@ public class ClassifiedComment extends AppCompatActivity {
                     pic_list.add(pic);
                     head_pic_list.add(head_pic);
                     head_name_list.add(head_name);
+                    comment_id_list.add(comment_id);
 
                 } catch (JSONException e) {
                 }
             }
 
 
-            ListAdapter adpt = new CommentsAdapter(this, ques_list, ans_list, name_list, pic_list, head_pic_list, head_name_list);
+            ListAdapter adpt = new CommentsAdapter(this, ids, comment_id_list, ques_list, ans_list, name_list, pic_list, head_pic_list, head_name_list);
             ListView list = (ListView) findViewById(R.id.listView3);
             list.setAdapter(adpt);
 
-            list.setOnItemClickListener(
+     /*       list.setOnItemClickListener(
                     new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                            showInputDialog();
-
                       }
                     }
-            );
+            );*/
         }
         else
             new Util().showerrormessage(ClassifiedComment.this, "Sorry no comments as per now!!");
-    }
-
-    protected void showInputDialog() {
-
-        // get prompts.xml view
-        LayoutInflater layoutInflater = LayoutInflater.from(ClassifiedComment.this);
-        View promptView = layoutInflater.inflate(R.layout.classified_comment_input_dialog, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ClassifiedComment.this);
-        alertDialogBuilder.setView(promptView);
-
-        final EditText editText = (EditText) promptView.findViewById(R.id.edittext);
-        // setup a dialog window
-        alertDialogBuilder.setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                  //      resultText.setText("Hello, " + editText.getText());
-                    }
-                })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-
-        // create an alert dialog
-        AlertDialog alert = alertDialogBuilder.create();
-        alert.show();
     }
 }

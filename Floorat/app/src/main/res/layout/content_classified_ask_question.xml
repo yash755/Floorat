@@ -11,8 +11,8 @@
     tools:context="com.floorat.Activity.ClassifiedAskQuestion">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:id="@+id/imageView4"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -36,7 +36,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Button"
+        android:text="Submit Query"
         android:id="@+id/button3"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

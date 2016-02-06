@@ -262,8 +262,6 @@ public class UploadClassifieds extends AppCompatActivity implements View.OnClick
                 Toast.makeText(UploadClassifieds.this,"Either no heading or Image", Toast.LENGTH_SHORT).show();
 
         }
-
-
     }
 
     private void sendad(String selectedImagePath,String aptname,String title,String description,String contact,String price,String sp1)
@@ -306,6 +304,4 @@ public class UploadClassifieds extends AppCompatActivity implements View.OnClick
 
         return mediaFile;
     }
-
-
 }

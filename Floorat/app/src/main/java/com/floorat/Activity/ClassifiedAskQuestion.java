@@ -78,15 +78,23 @@ public class ClassifiedAskQuestion extends AppCompatActivity {
         userlocalstore = new UserLocalStore(this);
         imageLoader.DisplayImage(userlocalstore.geturl(), imageView);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                insertComment();
 
-            }
-        });
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(editText.getText().toString().length()>0) {
+                        insertComment();
+                    }
+                    else
+                    {
+                        Toast.makeText(ClassifiedAskQuestion.this, "Please enter some query", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                }
+            });
     }
-
 
     void insertComment() {
         final ProgressDialog pDialog = new ProgressDialog(this);

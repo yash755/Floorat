@@ -255,8 +255,5 @@ public class ApartmentsList extends AppCompatActivity {
         }
         catch (JSONException e) {
         }
-
-
-
     }
 }
