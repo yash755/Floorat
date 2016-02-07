@@ -37,5 +37,7 @@
     <string name="title_activity_classified_comment">ClassifiedComment</string>
     <string name="title_activity_classified_ask_question">ClassifiedAskQuestion</string>
     <string name="title_activity_view_notification">ViewNotification</string>
+    <string name="title_activity_open_discussion">OpenDiscussion</string>
+    <string name="title_activity_discussion_details">DiscussionDetails</string>
 
 </resources>

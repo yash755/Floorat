@@ -28,8 +28,6 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
         Groups gr = new Groups();
         return gr;
-
-
     }
 
     // This method return the titles for the Tabs in the Tab Strip

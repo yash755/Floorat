@@ -128,6 +128,17 @@
             android:label="@string/title_activity_view_notification"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".Activity.OpenDiscussion"
+            android:label="@string/title_activity_open_discussion"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".Activity.DiscussionDetails"
+            android:label="@string/title_activity_discussion_details"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>

@@ -18,7 +18,6 @@ import com.floorat.R;
 public class BuySell extends Fragment {
 
     ImageView img;
-    Bitmap bitmap;
     TextView load;
     ImageLoader imageLoader;
 

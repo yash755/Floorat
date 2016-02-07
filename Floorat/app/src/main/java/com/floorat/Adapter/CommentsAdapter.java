@@ -28,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.floorat.Activity.Home;
 import com.floorat.ImageUtils.ImageLoader;
+import com.floorat.ImageUtils.RoundImageLoader;
 import com.floorat.R;
 import com.floorat.RequestHandler.CustomRequest;
 import com.floorat.SharedPrefrences.UserLocalStore;
@@ -49,7 +50,7 @@ public class CommentsAdapter extends ArrayAdapter<String> {
     ArrayList<String> head_pic_list = new ArrayList<>();
     ArrayList<String> head_name_list = new ArrayList<>();
     ArrayList<String> comment_id_list = new ArrayList<>();
-    ImageLoader imageLoader;
+    RoundImageLoader roundImageLoader;
     Context ctx;
     String ids;
     UserLocalStore userLocalStore;
@@ -63,7 +64,7 @@ public class CommentsAdapter extends ArrayAdapter<String> {
         head_pic_list = head_pic;
         head_name_list = head_name;
         comment_id_list = comment_id;
-        imageLoader = new ImageLoader(context);
+        roundImageLoader = new RoundImageLoader(context);
         ctx = context;
         ids=id;
     }
@@ -130,8 +131,8 @@ public class CommentsAdapter extends ArrayAdapter<String> {
         ans_name.setText(head_name_list.get(position));
 
 
-        imageLoader.DisplayImage(pic_list.get(position), ques_img);
-        imageLoader.DisplayImage(head_pic_list.get(position), ans_img);
+        roundImageLoader.DisplayImage(pic_list.get(position), ques_img);
+        roundImageLoader.DisplayImage(head_pic_list.get(position), ans_img);
         return customView;
     }
 //bs_id 37 user_name Sanchit Mittal comment yes I have check  parent Nupur

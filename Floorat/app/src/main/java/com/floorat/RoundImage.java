@@ -1,5 +1,6 @@
 package com.floorat;
 
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -90,4 +91,5 @@ public class RoundImage extends Drawable {
     public Bitmap getBitmap() {
         return mBitmap;
     }
+
 }
