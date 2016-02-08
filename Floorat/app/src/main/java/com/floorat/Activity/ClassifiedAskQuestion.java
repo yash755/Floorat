@@ -47,7 +47,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,10 +78,9 @@ public class ClassifiedAskQuestion extends AppCompatActivity {
         imageLoader.DisplayImage(userlocalstore.geturl(), imageView);
 
 
-            button.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     if(editText.getText().toString().length()>0) {
                         insertComment();
                     }
@@ -90,8 +88,6 @@ public class ClassifiedAskQuestion extends AppCompatActivity {
                     {
                         Toast.makeText(ClassifiedAskQuestion.this, "Please enter some query", Toast.LENGTH_SHORT).show();
                     }
-
-
                 }
             });
     }

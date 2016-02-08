@@ -156,7 +156,6 @@ public class ClassifiedComment extends AppCompatActivity {
             ListAdapter adpt = new CommentsAdapter(this, ids, comment_id_list, ques_list, ans_list, name_list, pic_list, head_pic_list, head_name_list);
             ListView list = (ListView) findViewById(R.id.listView3);
             list.setAdapter(adpt);
-
      /*       list.setOnItemClickListener(
                     new AdapterView.OnItemClickListener() {
                         @Override
